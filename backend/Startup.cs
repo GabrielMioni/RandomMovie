@@ -17,9 +17,19 @@ namespace backend
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+
+        public Startup(IWebHostEnvironment env)
         {
-            Configuration = configuration;
+            _env = env;
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
+            // Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
