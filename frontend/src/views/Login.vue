@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import { isRequired } from '@/rules'
 import { login } from '@/api/user'
 
@@ -63,19 +64,25 @@ export default {
     }
   },
   methods: {
+    ...mapActions('user', ['setUserData']),
     login () {
       const { userName, password } = this
       this.loading = true
+      let errorMessage = null
+
       login(userName, password)
         .then((response) => {
-          console.log(response)
+          this.setUserData(response.data)
         })
         .catch(error => {
+          const { response: { data: { message } } } = error
+          errorMessage = message
           console.error(error)
         })
         .finally(() => {
           setTimeout(() => {
             this.loading = false
+            console.log(errorMessage)
           }, 1000)
         })
     }
