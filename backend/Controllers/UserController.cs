@@ -61,7 +61,8 @@ namespace backend.Controllers
             {
                 var settings = _appSettings.JWT_Secret;
 
-                var role = await _userManager.GetRolesAsync(userData);
+                var roleFromDb = await _userManager.GetRolesAsync(userData);
+                var role = roleFromDb.Count > 0 ? roleFromDb[0] : null;
 
                 var key = Encoding.UTF8.GetBytes(_appSettings.JWT_Secret);
                 var expires = DateTime.UtcNow.AddDays(5);
