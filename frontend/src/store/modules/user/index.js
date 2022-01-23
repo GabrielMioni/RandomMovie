@@ -6,7 +6,6 @@ const state = {
     email: null,
     expires: null,
     role: null,
-    token: null,
     userName: null
   }
 }
