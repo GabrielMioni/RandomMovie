@@ -40,6 +40,11 @@
         </v-form>
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="snackError"
+      timeout="2000">
+      {{ errorMessage }}
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -60,7 +65,9 @@ export default {
       rules: {
         userName: [isRequired('The Username field is required')],
         password: [isRequired('The Password field is required')]
-      }
+      },
+      snackError: false,
+      errorMessage: ''
     }
   },
   methods: {
@@ -82,8 +89,11 @@ export default {
         .finally(() => {
           setTimeout(() => {
             this.loading = false
-            console.log(errorMessage)
-          }, 1000)
+            if (errorMessage) {
+              this.snackError = true
+              this.errorMessage = errorMessage
+            }
+          }, 500)
         })
     }
   }
