@@ -1,6 +1,16 @@
 import axios from 'axios'
 const localStorageUserKey = 'user'
 
+const initUserData = ({ dispatch }) => {
+  const userDataFromLocalStorage = localStorage.getItem(localStorageUserKey)
+
+  if (!userDataFromLocalStorage) {
+    return
+  }
+  const userData = JSON.parse(userDataFromLocalStorage)
+  dispatch('setUserData', userData)
+}
+
 const setUserData = ({ commit }, payload) => {
   const { token, ...userData } = payload
   axios.defaults.headers.common.Authorization = `Bearer ${token}`
@@ -21,6 +31,7 @@ const removeUserData = ({ commit }) => {
 }
 
 export default {
+  initUserData,
   setUserData,
   removeUserData
 }
