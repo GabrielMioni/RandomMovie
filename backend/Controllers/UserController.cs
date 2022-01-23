@@ -61,6 +61,8 @@ namespace backend.Controllers
             {
                 var settings = _appSettings.JWT_Secret;
 
+                var role = await _userManager.GetRolesAsync(userData);
+
                 var key = Encoding.UTF8.GetBytes(_appSettings.JWT_Secret);
                 var expires = DateTime.UtcNow.AddDays(5);
 
@@ -77,7 +79,7 @@ namespace backend.Controllers
                 var securityToken = tokenHandler.CreateToken(tokenDescriptor);
                 var token = tokenHandler.WriteToken(securityToken);
 
-                return Ok(new { token, userData.UserName, userData.Email, expires });
+                return Ok(new { token, userData.UserName, userData.Email, expires, role });
             }
             else
             {
