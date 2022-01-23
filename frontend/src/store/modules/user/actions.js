@@ -8,6 +8,19 @@ const setUserData = ({ commit }, payload) => {
   commit('SET_USER_DATA', userData)
 }
 
+const removeUserData = ({ commit }) => {
+  delete axios.defaults.headers.common.Authorization
+  localStorage.removeItem(localStorageUserKey)
+  commit('SET_USER_DATA', {
+    email: null,
+    expires: null,
+    role: null,
+    token: null,
+    userName: null
+  })
+}
+
 export default {
-  setUserData
+  setUserData,
+  removeUserData
 }
