@@ -7,7 +7,7 @@ export const adminRoutes = [
     component: () => import(/* webpackChunkName: "login" */ '../views/admin/AdminHome.vue'),
     beforeEnter (to, from, next) {
       if (store.getters['user/role'] !== 'Admin') {
-        next({ name: 'home' })
+        next({ name: 'login' })
         return
       }
       next()
