@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import { isRequired } from '@/rules'
 import { login } from '@/api/user'
 
@@ -70,6 +70,9 @@ export default {
       errorMessage: ''
     }
   },
+  computed: {
+    ...mapGetters('user', ['role'])
+  },
   methods: {
     ...mapActions('user', ['setUserData']),
     login () {
@@ -80,6 +83,8 @@ export default {
       login(userName, password)
         .then((response) => {
           this.setUserData(response.data)
+          const route = this.role === 'Admin' ? 'admin' : 'home'
+          this.$router.push({ name: route })
         })
         .catch(error => {
           const { response: { data: { message } } } = error
