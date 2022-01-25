@@ -13,8 +13,15 @@
 </template>
 
 <script>
+import { values } from '@/api/values'
+
 export default {
-  name: 'AdminHome'
+  name: 'AdminHome',
+  mounted () {
+    values()
+      .then(response => console.log(response))
+      .catch(error => console.log(error))
+  }
 }
 </script>
 
