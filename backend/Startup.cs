@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using backend.services;
 
 namespace backend
 {
@@ -84,6 +85,8 @@ namespace backend
                     ClockSkew = TimeSpan.Zero,
                 };
             });
+
+            services.AddSingleton<HtmlReader>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
