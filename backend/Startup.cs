@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using backend.services;
+using backend.Services;
 
 namespace backend
 {
@@ -39,7 +39,7 @@ namespace backend
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add Services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
@@ -50,8 +50,8 @@ namespace backend
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            // services.AddControllersWithViews();
-            // services.AddRazorPages();
+            // Services.AddControllersWithViews();
+            // Services.AddRazorPages();
             services.AddSpaStaticFiles(options => { options.RootPath = "wwwroot"; });
 
             services.Configure<IdentityOptions>(options =>
