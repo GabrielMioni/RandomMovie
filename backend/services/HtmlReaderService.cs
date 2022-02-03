@@ -1,26 +1,31 @@
 ﻿using AngleSharp;
+using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace backend.services
+namespace backend.Services
 {
     public class HtmlReader
     {
         private IHtmlParser _parser;
+        private IBrowsingContext _context;
 
         public HtmlReader()
         {
             var config = Configuration.Default;
-            var context = BrowsingContext.New(config);
-            _parser = context.GetService<IHtmlParser>();
+            _context = BrowsingContext.New(config);
+            // _parser = context.GetService<IHtmlParser>();
         }
 
-        public string ParseHtml (string url)
+        public async Task<IHtmlCollection<IElement>> ParseHtmlAsync (string url, string querySelector)
         {
-            return BuildHtmlString(url);
+            var source = BuildHtmlString(url);
+            var document = await _context.OpenAsync(request => request.Content(source));
+
+            return document.QuerySelectorAll(querySelector);
         }
 
         private string BuildHtmlString(string urlAddress)
