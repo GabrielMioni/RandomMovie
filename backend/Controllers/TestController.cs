@@ -45,8 +45,14 @@ namespace backend.Controllers
 
         private async Task AddDirectorsAsync(List<Director> directors)
         {
-            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE Directors");
+            await TruncateTable("Directors");
             await _context.Directors.AddRangeAsync(directors);
+        }
+
+        private async Task TruncateTable(string tableName)
+        {
+            var sqlCommand = string.Format("TRUNCATE TABLE {0}", tableName);
+            await _context.Database.ExecuteSqlRawAsync(sqlCommand);
         }
 
         private List<string> GetFilterData(IElement main, string labelName)
