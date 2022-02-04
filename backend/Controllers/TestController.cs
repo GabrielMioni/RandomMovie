@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using backend.Dtos;
+using backend.Data;
+using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
@@ -13,10 +16,12 @@ namespace backend.Controllers
     public class TestController : ControllerBase
     {
         private HtmlReader _htmlReader;
+        private ApplicationDbContext _context;
 
-        public TestController(HtmlReader htmlReader)
+        public TestController(HtmlReader htmlReader, ApplicationDbContext context)
         {
             _htmlReader = htmlReader;
+            _context = context;
         }
 
         [HttpGet]
@@ -32,7 +37,16 @@ namespace backend.Controllers
             var countries = GetFilterData(main, "country");
             var directors = getDirectors(main);
 
+            await AddDirectorsAsync(directors);
+            await _context.SaveChangesAsync();
+
             return Ok(new { genres, decades, countries, directors });
+        }
+
+        private async Task AddDirectorsAsync(List<Director> directors)
+        {
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE Directors");
+            await _context.Directors.AddRangeAsync(directors);
         }
 
         private List<string> GetFilterData(IElement main, string labelName)
@@ -50,11 +64,11 @@ namespace backend.Controllers
             return labelValues;
         }
 
-        private List<DirectorDto> getDirectors(IElement main)
+        private List<Director> getDirectors(IElement main)
         {
             var tableRows = main.QuerySelectorAll("#gridview tbody tr");
 
-            var directorList = new List<DirectorDto>();
+            var directorList = new List<Director>();
 
             foreach(var tr in tableRows)
             {
@@ -90,7 +104,7 @@ namespace backend.Controllers
                         lastName = directorName.Substring(index + 1);
                     }
 
-                    var directorDto = new DirectorDto
+                    var directorDto = new Director
                     {
                         FirstName = firstName,
                         LastName = lastName,
