@@ -32,26 +32,30 @@ namespace backend.Controllers
 
             var main = htmlCollection.Length > 0 ? htmlCollection[0] : null;
 
-            var genres = GetGenres(main);
             var decades = GetFilterData(main, "decade");
             var countries = GetFilterData(main, "country");
             var directors = getDirectors(main);
 
-            await AddGenresAsync(genres);
-            await AddDirectorsAsync(directors);
+            await AddGenresAsync(main);
+            await AddDirectorsAsync(main);
             await _context.SaveChangesAsync();
 
-            return Ok(new { genres, decades, countries, directors });
+            // return Ok(new { genres, decades, countries, directors });
+            return Ok();
         }
 
-        private async Task AddGenresAsync(List<Genre> genres)
+        private async Task AddGenresAsync(IElement main)
         {
+            var genres = GetGenres(main);
+
             await TruncateTable("Genres");
             await _context.Genres.AddRangeAsync(genres);
         }
 
-        private async Task AddDirectorsAsync(List<Director> directors)
+        private async Task AddDirectorsAsync(IElement main)
         {
+            var directors = getDirectors(main);
+
             await TruncateTable("Directors");
             await _context.Directors.AddRangeAsync(directors);
         }
