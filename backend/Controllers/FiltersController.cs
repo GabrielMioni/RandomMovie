@@ -23,7 +23,7 @@ namespace backend.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("Collect")]
         public async Task<IActionResult> CollectFiltersAsync()
         {
