@@ -32,13 +32,17 @@ namespace backend.Controllers
             var main = htmlCollection.Length > 0 ? htmlCollection[0] : null;
 
             await AddCountriesAsync(main);
-            await AddGenresAsync(main);
             await AddDecadesAsync(main);
             await AddDirectorsAsync(main);
+            await AddGenresAsync(main);
             await _context.SaveChangesAsync();
 
-            // return Ok(new { genres, decades, countries, directors });
-            return Ok();
+            var countries = _context.Countries.ToList();
+            var decades = _context.Decades.ToList();
+            var directors = _context.Directors.ToList();
+            var genres = _context.Genres.ToList();
+
+            return Ok(new { genres, decades, countries, directors });
         }
 
         private async Task AddCountriesAsync(IElement main)
