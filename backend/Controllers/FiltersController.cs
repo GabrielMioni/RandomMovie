@@ -12,20 +12,20 @@ namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TestController : ControllerBase
+    public class FiltersController : ControllerBase
     {
         private HtmlReader _htmlReader;
         private ApplicationDbContext _context;
 
-        public TestController(HtmlReader htmlReader, ApplicationDbContext context)
+        public FiltersController(HtmlReader htmlReader, ApplicationDbContext context)
         {
             _htmlReader = htmlReader;
             _context = context;
         }
 
         [HttpGet]
-        [Route("Filters")]
-        public async Task<IActionResult> GetFiltersAsync()
+        [Route("Collect")]
+        public async Task<IActionResult> CollectFiltersAsync()
         {
             var htmlCollection = await _htmlReader.ParseHtmlAsync("https://films.criterionchannel.com/", "main");
 
