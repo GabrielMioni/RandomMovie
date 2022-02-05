@@ -32,16 +32,24 @@ namespace backend.Controllers
 
             var main = htmlCollection.Length > 0 ? htmlCollection[0] : null;
 
-            var decades = GetFilterData(main, "decade");
             var countries = GetFilterData(main, "country");
             var directors = getDirectors(main);
 
             await AddGenresAsync(main);
+            await AddDecadesAsync(main);
             await AddDirectorsAsync(main);
             await _context.SaveChangesAsync();
 
             // return Ok(new { genres, decades, countries, directors });
             return Ok();
+        }
+
+        private async Task AddDecadesAsync(IElement main)
+        {
+            var decades = GetDecades(main);
+
+            await TruncateTable("Decades");
+            await _context.Decades.AddRangeAsync(decades);
         }
 
         private async Task AddGenresAsync(IElement main)
@@ -64,6 +72,25 @@ namespace backend.Controllers
         {
             var sqlCommand = string.Format("TRUNCATE TABLE {0}", tableName);
             await _context.Database.ExecuteSqlRawAsync(sqlCommand);
+        }
+
+        private List<Decade> GetDecades(IElement main)
+        {
+            var decadeStrings = GetFilterData(main, "decade");
+
+            var decadeList = new List<Decade>();
+
+            foreach(var decadeString in decadeStrings)
+            {
+                var decade = new Decade
+                {
+                    Name = decadeString
+                };
+
+                decadeList.Add(decade);
+            }
+
+            return decadeList.OrderBy(d => d.Name).ToList();
         }
 
         private List<Genre> GetGenres(IElement main)
