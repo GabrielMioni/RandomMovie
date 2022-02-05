@@ -8,6 +8,8 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20220203040623_AddDirector.cs" />
     <Compile Remove="Data\Migrations\20220203040623_AddDirector.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220205050519_AddDecade.cs" />
+    <Compile Remove="Data\Migrations\20220205050519_AddDecade.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
