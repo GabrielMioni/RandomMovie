@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace backend.Models
+namespace backend.Models.Filters
 {
-    public class Genre
+    public class Decade
     {
         public int Id { get; set; }
         [Required]

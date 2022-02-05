@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace backend.Models
+﻿namespace backend.Models.Filters
 {
     public class Director
     {

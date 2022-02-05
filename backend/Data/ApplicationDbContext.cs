@@ -1,4 +1,4 @@
-﻿using backend.Models;
+﻿using backend.Models.Filters;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

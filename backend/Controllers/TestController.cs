@@ -4,9 +4,8 @@ using backend.Services;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using backend.Dtos;
 using backend.Data;
-using backend.Models;
+using backend.Models.Filters;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
