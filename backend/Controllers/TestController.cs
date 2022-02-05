@@ -209,37 +209,6 @@ namespace backend.Controllers
             return directorList.OrderBy(d => d.LastName).ToList();
         }
 
-        [HttpGet]
-        [Route("Values")]
-        // GET : /api/Test
-        public async Task<IActionResult> GetTestAsync()
-        {
-            // var result = await _htmlReader.ParseHtmlAsync("https://films.criterionchannel.com//", "#gridview tbody tr .criterion-channel__td--title a");
-            var tableRows = await _htmlReader.ParseHtmlAsync("https://films.criterionchannel.com/", "#gridview tbody tr");
-
-            var movieList = new List<object>();
-            var directorList = new List<string>();
-
-            foreach(var tr in tableRows)
-            {
-                // var movieTitle = tr.QuerySelector(".criterion-channel__td--title a").InnerHtml.Trim();
-                var title = GetInnerHtml(tr, ".criterion-channel__td--title a");
-                var director = GetInnerHtml(tr, ".criterion-channel__td--director");
-                var country = GetInnerHtml(tr, ".criterion-channel__td--country span");
-                var year = GetInnerHtml(tr, ".criterion-channel__td--year");
-
-                // movieList.Add(new { title, director, country });
-                movieList.Add(new { country, director, title, year });
-                directorList.Add(director);
-            }
-
-            var count = movieList.Count;
-            var data = movieList;
-            var directors = directorList.Distinct().ToList();
-
-            return Ok(new { count, data, directors });
-        }
-
         private string GetInnerHtml(IElement elm, string querySelector)
         {
             return elm.QuerySelector(querySelector).InnerHtml.Trim();
