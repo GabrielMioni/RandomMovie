@@ -42,7 +42,15 @@ namespace backend.Controllers
             var directors = _context.Directors.ToList();
             var genres = _context.Genres.ToList();
 
-            return Ok(new { genres, decades, countries, directors });
+            var filterResponse = new
+            {
+                countries = new { data = countries, count = countries.Count },
+                decades = new { data = decades, count = decades.Count },
+                directors = new { data = directors, count = directors.Count },
+                genres = new { data = genres, count = genres.Count }
+            };
+
+            return Ok(filterResponse);
         }
 
         private async Task AddCountriesAsync(IElement main)
@@ -173,7 +181,7 @@ namespace backend.Controllers
                 
                 foreach(var directorName in directorStrings)
                 {
-                    var alreadyInList = directorList.Find(directorInList => directorInList.FullName == directorName);
+                    var alreadyInList = directorList.Find(directorInList => directorInList.Name == directorName);
 
                     if (alreadyInList != null)
                     {
@@ -182,7 +190,7 @@ namespace backend.Controllers
 
                     string firstName = directorName;
                     string lastName = directorName;
-                    string fullName = directorName;
+                    string name = directorName;
 
                     var indexOfVon = directorName.ToLower().IndexOf(" von ");
                     var index = indexOfVon > -1
@@ -199,7 +207,7 @@ namespace backend.Controllers
                     {
                         FirstName = firstName,
                         LastName = lastName,
-                        FullName = fullName
+                        Name = name
                     };
 
                     directorList.Add(directorDto);
