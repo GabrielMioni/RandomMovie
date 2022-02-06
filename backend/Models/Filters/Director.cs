@@ -1,9 +1,7 @@
 ﻿namespace backend.Models.Filters
 {
-    public class Director
+    public class Director : AbstractFilter
     {
-        public int Id { get; set; }
-        public string FullName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
     }

@@ -1,11 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace backend.Models.Filters
+﻿namespace backend.Models.Filters
 {
-    public class Decade
+    public class Decade : AbstractFilter
     {
-        public int Id { get; set; }
-        [Required]
-        public string Name { get; set; }
     }
 }
