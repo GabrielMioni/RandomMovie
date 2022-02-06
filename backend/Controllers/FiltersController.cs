@@ -7,6 +7,7 @@ using System.Linq;
 using backend.Data;
 using backend.Models.Filters;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace backend.Controllers
 {
@@ -27,15 +28,7 @@ namespace backend.Controllers
         [Route("Collect")]
         public async Task<IActionResult> CollectFiltersAsync()
         {
-            var htmlCollection = await _htmlReader.ParseHtmlAsync("https://films.criterionchannel.com/", "main");
-
-            var main = htmlCollection.Length > 0 ? htmlCollection[0] : null;
-
-            await AddCountriesAsync(main);
-            await AddDecadesAsync(main);
-            await AddDirectorsAsync(main);
-            await AddGenresAsync(main);
-            await _context.SaveChangesAsync();
+            await CollectAllFilters();
 
             var countries = _context.Countries.ToList();
             var decades = _context.Decades.ToList();
@@ -51,6 +44,19 @@ namespace backend.Controllers
             };
 
             return Ok(filterResponse);
+        }
+
+        private async Task CollectAllFilters()
+        {
+            var htmlCollection = await _htmlReader.ParseHtmlAsync("https://films.criterionchannel.com/", "main");
+
+            var main = htmlCollection.Length > 0 ? htmlCollection[0] : null;
+
+            await AddCountriesAsync(main);
+            await AddDecadesAsync(main);
+            await AddDirectorsAsync(main);
+            await AddGenresAsync(main);
+            await _context.SaveChangesAsync();
         }
 
         private async Task AddCountriesAsync(IElement main)
@@ -157,7 +163,8 @@ namespace backend.Controllers
 
             foreach(var label in labelElms)
             {
-                labelValues.Add(label.InnerHtml.Trim());
+                var value = label.InnerHtml.Trim();
+                labelValues.Add(Regex.Replace(value, "[/|\\s]", "-"));
             }
 
             return labelValues;
