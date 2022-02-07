@@ -86,7 +86,7 @@ namespace backend.Controllers
 
         private async Task AddDirectorsAsync(IElement main)
         {
-            var directors = getDirectors(main);
+            var directors = GetDirectors(main);
 
             await TruncateTable("Directors");
             await _context.Directors.AddRangeAsync(directors);
@@ -171,7 +171,7 @@ namespace backend.Controllers
             return labelValues;
         }
 
-        private List<Director> getDirectors(IElement main)
+        private List<Director> GetDirectors(IElement main)
         {
             var tableRows = main.QuerySelectorAll("#gridview tbody tr");
 
@@ -198,9 +198,6 @@ namespace backend.Controllers
                     string firstName = directorName;
                     string lastName = directorName;
                     string name = directorName;
-
-                    //string[] prefixes = { "af", "al", "el", "auf", "da", "de", "dai", "dal", "del", "della", "dei", "di", "des", "du", "d'", "of", "von", "van", "zu" };
-                    //var prefixPattern = string.Join("|", prefixes.Select(prefix => $"( {prefix} )"));
 
                     var prefixPattern = GetNamePrefixPattern();
 
