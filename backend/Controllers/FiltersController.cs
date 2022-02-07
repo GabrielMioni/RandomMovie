@@ -17,6 +17,7 @@ namespace backend.Controllers
     {
         private HtmlReader _htmlReader;
         private ApplicationDbContext _context;
+        private string NamePrefixPattern;
 
         public FiltersController(HtmlReader htmlReader, ApplicationDbContext context)
         {
@@ -181,9 +182,8 @@ namespace backend.Controllers
                 var directorStrings = GetInnerHtml(tr, ".criterion-channel__td--director")
                     .Replace(" and ", ", ")
                     .Replace(", and", ", ")
-                    .Replace("  ", " ")
                     .Split(", ")
-                    .Select(directorName => directorName.Trim())
+                    .Select(directorName => Regex.Replace(directorName.Trim(), @"\s+", " "))
                     .Distinct();
                 
                 foreach(var directorName in directorStrings)
@@ -199,9 +199,16 @@ namespace backend.Controllers
                     string lastName = directorName;
                     string name = directorName;
 
-                    var indexOfVon = directorName.ToLower().IndexOf(" von ");
-                    var index = indexOfVon > -1
-                        ? indexOfVon
+                    //string[] prefixes = { "af", "al", "el", "auf", "da", "de", "dai", "dal", "del", "della", "dei", "di", "des", "du", "d'", "of", "von", "van", "zu" };
+                    //var prefixPattern = string.Join("|", prefixes.Select(prefix => $"( {prefix} )"));
+
+                    var prefixPattern = GetNamePrefixPattern();
+
+                    var prefixMatch = Regex.Match(directorName, prefixPattern, RegexOptions.IgnoreCase);
+                    var indexOfPrefix = prefixMatch.Success ? prefixMatch.Index : -1;
+
+                    var index = indexOfPrefix > -1
+                        ? indexOfPrefix
                         : directorName.LastIndexOf(' ');
 
                     if (index > -1)
@@ -210,18 +217,28 @@ namespace backend.Controllers
                         lastName = directorName.Substring(index + 1);
                     }
 
-                    var directorDto = new Director
+                    var director = new Director
                     {
                         FirstName = firstName,
                         LastName = lastName,
                         Name = name
                     };
 
-                    directorList.Add(directorDto);
+                    directorList.Add(director);
                 }
             }
 
             return directorList.OrderBy(d => d.LastName).ToList();
+        }
+
+        private string GetNamePrefixPattern()
+        {
+            if (NamePrefixPattern == null)
+            {
+                string[] prefixesList = { "af", "al", "el", "auf", "da", "de", "dai", "dal", "del", "della", "dei", "di", "des", "du", "d'", "of", "von", "van", "zu" };
+                NamePrefixPattern = string.Join("|", prefixesList.Select(prefix => $"( {prefix} )"));
+            }
+            return NamePrefixPattern;
         }
 
         private string GetInnerHtml(IElement elm, string querySelector)
