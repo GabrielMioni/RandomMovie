@@ -8,6 +8,7 @@ using backend.Data;
 using backend.Models.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using System;
 
 namespace backend.Controllers
 {
@@ -179,16 +180,17 @@ namespace backend.Controllers
 
             foreach(var tr in tableRows)
             {
-                var directorStrings = GetInnerHtml(tr, ".criterion-channel__td--director")
-                    .Replace(" and ", ", ")
-                    .Replace(", and", ", ")
+                var directorString = GetInnerHtml(tr, ".criterion-channel__td--director");
+                directorString = Regex.Replace(directorString, "( and )|( , and)", ", ").Replace(",,", ",");
+
+                var directorNames = directorString
                     .Split(", ")
                     .Select(directorName => Regex.Replace(directorName.Trim(), @"\s+", " "))
                     .Distinct();
                 
-                foreach(var directorName in directorStrings)
+                foreach(var directorName in directorNames)
                 {
-                    var alreadyInList = directorList.Find(directorInList => directorInList.Name == directorName);
+                    var alreadyInList = directorList.Find(d => d.Name.Trim() == directorName.Trim());
 
                     if (alreadyInList != null)
                     {
