@@ -95,8 +95,8 @@ namespace backend.Controllers
 
         private async Task TruncateTable(string tableName)
         {
-            var sqlCommand = string.Format("TRUNCATE TABLE {0}", tableName);
-            await _context.Database.ExecuteSqlRawAsync(sqlCommand);
+            await _context.Database.ExecuteSqlRawAsync("Delete from " + tableName);
+            await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('" + tableName + "', RESEED, 0)");
         }
 
         private List<Country> GetCountries(IElement main)
@@ -126,9 +126,12 @@ namespace backend.Controllers
 
             foreach(var decadeString in decadeStrings)
             {
+                var decadeInt = Regex.Match(decadeString, @"\d+").Value;
+
                 var decade = new Decade
                 {
-                    Name = decadeString
+                    Name = decadeString,
+                    DecadeInt = Int32.Parse(decadeInt)
                 };
 
                 decadeList.Add(decade);
