@@ -6,6 +6,7 @@ using backend.Models.Filters;
 using backend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,20 +49,20 @@ namespace backend.Controllers
                 movieDtos = movieDtos.Concat(moviesDtosForGenre).ToList();
             }
 
-            //var counter = 0;
+            var counter = 0;
 
-            //foreach (var movieDto in movieDtos)
-            //{
-            //    _movieService.AddMovie(movieDto);
-            //    counter++;
+            foreach (var movieDto in movieDtos)
+            {
+                _movieService.AddMovie(movieDto);
+                counter++;
 
-            //    if (counter >= 100)
-            //    {
-            //        await _context.SaveChangesAsync();
-            //        counter = 0;
-            //    }
-            //}
-            
+                if (counter >= 100)
+                {
+                    await _context.SaveChangesAsync();
+                    counter = 0;
+                }
+            }
+
             return Ok(movieDtos);
         }
 
@@ -117,6 +118,13 @@ namespace backend.Controllers
         private string GetInnerHtml(IElement elm, string querySelector)
         {
             return elm.QuerySelector(querySelector).InnerHtml.Trim();
+        }
+
+        // TODO Make TruncateTable a helper function and replace the the method here and in FiltersController.TruncateTable()
+        private async Task TruncateTable(string tableName)
+        {
+            await _context.Database.ExecuteSqlRawAsync("Delete from " + tableName);
+            await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('" + tableName + "', RESEED, 0)");
         }
 
         //private Task GetMovies(IElement main)
