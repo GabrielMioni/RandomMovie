@@ -10,7 +10,7 @@ namespace backend.Models
         public Country Country { get; set; }
         public Decade Decade { get; set; }
         public string Title { get; set; }
-
+        public int Year { get; set; }
         public List<Movie_Director> Movie_Directors { get; set; }
         public List<Movie_Genre> Movie_Genres { get; set; }
     }

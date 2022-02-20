@@ -2,6 +2,7 @@
 using backend.Dtos;
 using backend.Models;
 using backend.Models.Filters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +22,11 @@ namespace backend.Services
         {
             var movieTitle = movieDto.Title;
 
+            if (movieTitle == null || movieDto.Decade == null)
+            {
+                Console.WriteLine(movieTitle, movieDto.Decade);
+            }
+
             var movieInDb = _context.Movies.FirstOrDefault(m => m.Title == movieTitle && m.Decade.Id == movieDto.Decade.Id);
 
             if (movieInDb != null)
@@ -34,8 +40,10 @@ namespace backend.Services
                 Title = movieDto.Title,
                 Decade = movieDto.Decade,
                 Country = movieDto.Country,
+                Year = movieDto.Year
             };
             _context.Movies.Add(movie);
+            _context.SaveChanges();
 
             UpdateMovie(movie, movieDto);
         }

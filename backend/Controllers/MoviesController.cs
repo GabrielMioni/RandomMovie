@@ -35,7 +35,16 @@ namespace backend.Controllers
         [Route("Collect")]
         public async Task<IActionResult> CollectMoviesAsync()
         {
-            var genres = _context.Genres.ToList().OrderBy(g => g.Name);
+            // var genres = _context.Genres.ToList().OrderBy(g => g.Name);
+
+            var genres = new List<Genre>();
+            genres.Add(new Genre { Id = 1, Name = "Avant-garde" });
+            genres.Add(new Genre { Id = 1, Name = "Action-Adventure" });
+            //genres.Add(new Genre { Id = 1, Name = "Animation" });
+            //genres.Add(new Genre { Id = 1, Name = "Comedy" });
+            //genres.Add(new Genre { Id = 1, Name = "Crime" });
+            //genres.Add(new Genre { Id = 1, Name = "Documentary" });
+
             var movieDtos = new List<MovieDto>();
 
             foreach (var genre in genres)
@@ -51,6 +60,8 @@ namespace backend.Controllers
 
             var counter = 0;
 
+            await TruncateTable("Movies");
+
             foreach (var movieDto in movieDtos)
             {
                 _movieService.AddMovie(movieDto);
@@ -63,7 +74,7 @@ namespace backend.Controllers
                 }
             }
 
-            return Ok(movieDtos);
+            return Ok();
         }
 
         private List<MovieDto> GetMoviesData(IElement main, Genre genre)
@@ -89,7 +100,8 @@ namespace backend.Controllers
                     Decade = decade,
                     Directors = directors,
                     Genres = new List<Genre> { genre },
-                    Title = movieTitleString
+                    Title = movieTitleString,
+                    Year = Int32.Parse(yearString)
                 };
                 movieList.Add(movie);
             }

@@ -9,6 +9,7 @@ namespace backend.Dtos
         public Country Country { get; set; }
         public Decade Decade { get; set; }
         public string Title { get; set; }
+        public int Year { get; set; }
         public List<Director> Directors { get; set; }
         public List<Genre> Genres { get; set; }
     }
