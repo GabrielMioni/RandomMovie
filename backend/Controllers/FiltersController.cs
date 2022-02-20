@@ -127,6 +127,7 @@ namespace backend.Controllers
 
             var decadeList = new List<Decade>();
 
+            decadeList.Add(new Decade { DecadeInt = 0, Name = "0000s" });
             decadeList.Add(new Decade { DecadeInt = 1900, Name = "1900s" });
 
             foreach(var decadeString in decadeStrings)
