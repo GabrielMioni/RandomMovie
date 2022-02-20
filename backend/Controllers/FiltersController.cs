@@ -54,6 +54,9 @@ namespace backend.Controllers
 
             var main = htmlCollection.Length > 0 ? htmlCollection[0] : null;
 
+            await TruncateTable("Movies");
+            await _context.SaveChangesAsync();
+
             await AddCountriesAsync(main);
             await AddDecadesAsync(main);
             await AddDirectorsAsync(main);
@@ -123,6 +126,8 @@ namespace backend.Controllers
             var decadeStrings = GetFilterData(main, "decade");
 
             var decadeList = new List<Decade>();
+
+            decadeList.Add(new Decade { DecadeInt = 1900, Name = "1900s" });
 
             foreach(var decadeString in decadeStrings)
             {
