@@ -112,7 +112,7 @@ namespace backend.Controllers
             {
                 var country = new Country
                 {
-                    Name = countryString
+                    Name = countryString.Replace("-", " ").Trim()
                 };
 
                 countryList.Add(country);
