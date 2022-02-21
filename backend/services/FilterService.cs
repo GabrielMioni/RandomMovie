@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom;
 using backend.Data;
+using backend.Extensions;
 using backend.Models.Filters;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -50,7 +51,8 @@ namespace backend.Services
 
             var main = htmlCollection.Length > 0 ? htmlCollection[0] : null;
 
-            await TruncateTable("Movies");
+            await _context.TruncateTable("Movies");
+
             await _context.SaveChangesAsync();
 
             await AddCountriesAsync(main);
@@ -64,7 +66,7 @@ namespace backend.Services
         {
             var countries = GetCountries(main);
 
-            await TruncateTable("Countries");
+            await _context.TruncateTable("Countries");
             await _context.Countries.AddRangeAsync(countries);
         }
 
@@ -72,7 +74,7 @@ namespace backend.Services
         {
             var decades = GetDecades(main);
 
-            await TruncateTable("Decades");
+            await _context.TruncateTable("Decades");
             await _context.Decades.AddRangeAsync(decades);
         }
 
@@ -80,7 +82,7 @@ namespace backend.Services
         {
             var genres = GetGenres(main);
 
-            await TruncateTable("Genres");
+            await _context.TruncateTable("Genres");
             await _context.Genres.AddRangeAsync(genres);
         }
 
@@ -88,14 +90,8 @@ namespace backend.Services
         {
             var directors = GetDirectors(main);
 
-            await TruncateTable("Directors");
+            await _context.TruncateTable("Directors");
             await _context.Directors.AddRangeAsync(directors);
-        }
-
-        private async Task TruncateTable(string tableName)
-        {
-            await _context.Database.ExecuteSqlRawAsync("Delete from " + tableName);
-            await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('" + tableName + "', RESEED, 0)");
         }
 
         private List<Country> GetCountries(IElement main)

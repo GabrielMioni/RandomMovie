@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
 using backend.Data;
 using backend.Dtos;
+using backend.Extensions;
 using backend.Models;
 using backend.Models.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -28,9 +29,9 @@ namespace backend.Services
         {
             var movieDtos = await GetAllMoviesAsync();
 
-            await TruncateTable("Movies");
-            await TruncateTable("Movie_Directors");
-            await TruncateTable("Movie_Genres");
+            await _context.TruncateTable("Movies");
+            await _context.TruncateTable("Movie_Directors");
+            await _context.TruncateTable("Movie_Genres");
 
             var counter = 0;
 
@@ -160,6 +161,12 @@ namespace backend.Services
             UpdateMovie(movie, movieDto);
         }
 
+        private void UpdateMovie(Movie movie, MovieDto movieDto)
+        {
+            AddDirectorsToMovie(movie, movieDto);
+            AddGenresToMovie(movie, movieDto);
+        }
+
         private void AddGenresToMovie(Movie movie, MovieDto movieDto)
         {
             var genres = movieDto.Genres;
@@ -204,19 +211,6 @@ namespace backend.Services
 
                 _context.Movie_Directors.Add(movie_director);
             }
-        }
-
-        private void UpdateMovie(Movie movie, MovieDto movieDto)
-        {
-            AddDirectorsToMovie(movie, movieDto);
-            AddGenresToMovie(movie, movieDto);
-        }
-
-        // TODO Make TruncateTable a helper function and replace the the method here and in FiltersController.TruncateTable()
-        private async Task TruncateTable(string tableName)
-        {
-            await _context.Database.ExecuteSqlRawAsync("Delete from " + tableName);
-            await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT ('" + tableName + "', RESEED, 0)");
         }
     }
 }
