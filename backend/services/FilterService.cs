@@ -182,12 +182,7 @@ namespace backend.Services
             foreach (var tr in tableRows)
             {
                 var directorString = GetInnerHtml(tr, ".criterion-channel__td--director");
-                directorString = Regex.Replace(directorString, "( and )|( , and)", ", ").Replace(",,", ",");
-
-                var directorNames = directorString
-                    .Split(", ")
-                    .Select(directorName => Regex.Replace(directorName.Trim(), @"\s+", " "))
-                    .Distinct();
+                var directorNames = directorString.GetDirectorNamesFromString();
 
                 foreach (var directorName in directorNames)
                 {
@@ -246,15 +241,15 @@ namespace backend.Services
             return elm.QuerySelector(querySelector).InnerHtml.Trim();
         }
 
-        public List<string> GetDirectorNamesFromString(string directorString)
-        {
-            directorString = Regex.Replace(directorString, "( and )|( , and)", ", ").Replace(",,", ",");
+        //public List<string> GetDirectorNamesFromString(string directorString)
+        //{
+        //    directorString = Regex.Replace(directorString, "( and )|( , and)", ", ").Replace(",,", ",");
 
-            return directorString
-                .Split(", ")
-                .Select(directorName => Regex.Replace(directorName.Trim(), @"\s+", " ")) // Convert any whitespace to a single space
-                .Distinct()
-                .ToList();
-        }
+        //    return directorString
+        //        .Split(", ")
+        //        .Select(directorName => Regex.Replace(directorName.Trim(), @"\s+", " ")) // Convert any whitespace to a single space
+        //        .Distinct()
+        //        .ToList();
+        //}
     }
 }

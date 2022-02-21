@@ -117,7 +117,8 @@ namespace backend.Services
 
         private List<Director> GetDirectorsFromString(string directorsString)
         {
-            var directorNames = _filterService.GetDirectorNamesFromString(directorsString);
+            // var directorNames = _filterService.GetDirectorNamesFromString(directorsString);
+            var directorNames = directorsString.GetDirectorNamesFromString();
             return directorNames.Select(name => GetDirectorByName(name)).ToList();
         }
 
