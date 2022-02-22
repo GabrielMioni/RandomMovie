@@ -35,5 +35,13 @@ namespace backend.Controllers
 
             return Ok(filterResponse);
         }
+
+        [HttpGet]
+        [Route("Get")]
+        public IActionResult GetFiltersAsync()
+        {
+            var filterResponse = _filterService.GetAllFiltersData();
+            return Ok(filterResponse);
+        }
     }
 }

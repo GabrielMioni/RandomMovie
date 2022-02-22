@@ -86,6 +86,8 @@ namespace backend
                 };
             });
 
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddSingleton<HtmlReader>();
             services.AddScoped<MovieService>();
             services.AddScoped<FilterService>();
