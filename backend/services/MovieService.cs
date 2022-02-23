@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using AutoMapper;
 using backend.Data;
 using backend.Dtos;
 using backend.Extensions;
@@ -16,13 +17,33 @@ namespace backend.Services
     {
         private ApplicationDbContext _context;
         private HtmlReader _htmlReader;
-        private FilterService _filterService;
+        private IMapper _mapper;
 
-        public MovieService(ApplicationDbContext context, HtmlReader htmlReader, FilterService filterService)
+        public MovieService(ApplicationDbContext context, HtmlReader htmlReader, IMapper mapper)
         {
             _context = context;
             _htmlReader = htmlReader;
-            _filterService = filterService;
+            _mapper = mapper;
+        }
+
+        public List<MovieDto> GetMovie()
+        {
+            var movies = _context.Movies
+                .Include(m => m.Country)
+                .Include(m => m.Decade)
+                .Include(m => m.Movie_Directors)
+                .ThenInclude(md => md.Director)
+                .Include(m => m.Movie_Genres)
+                .ThenInclude(mg => mg.Genre)
+                .ToList();
+            // .Include(m => m.Movie_Directors.Select(md => md.Director))
+            // .Include(m => m.Movie_Genres.Select(md => md.Genre));
+
+            var lookAtMe = movies.ToList();
+
+            var lookAtMe2 = movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
+
+            return lookAtMe2;
         }
 
         public async Task SaveMoviesAsync()
@@ -91,18 +112,19 @@ namespace backend.Services
 
                 var country = _context.Countries.FirstOrDefault(c => c.Name.Replace("-", " ") == countryString);
                 var decade = GetDecadeFromString(yearString);
-                var directors = GetDirectorsFromString(directorString);
+                var directorDtos = GetDirectorDtosFromString(directorString);
+                var genreDtos = new List<GenreDto> { _mapper.Map<GenreDto>(genre) };
 
-                var movie = new MovieDto
+                var movieDto = new MovieDto
                 {
                     Country = country,
                     Decade = decade,
-                    Directors = directors,
-                    Genres = new List<Genre> { genre },
+                    Directors = directorDtos,
+                    Genres = genreDtos,
                     Title = movieTitleString,
                     Year = Int32.Parse(yearString)
                 };
-                movieList.Add(movie);
+                movieList.Add(movieDto);
             }
 
             return movieList;
@@ -115,11 +137,11 @@ namespace backend.Services
             return decade;
         }
 
-        private List<Director> GetDirectorsFromString(string directorsString)
+        private List<DirectorDto> GetDirectorDtosFromString(string directorsString)
         {
             // var directorNames = _filterService.GetDirectorNamesFromString(directorsString);
             var directorNames = directorsString.GetDirectorNamesFromString();
-            return directorNames.Select(name => GetDirectorByName(name)).ToList();
+            return directorNames.Select(name => _mapper.Map<DirectorDto>(GetDirectorByName(name))).ToList();
         }
 
         private Director GetDirectorByName(string directorName)
