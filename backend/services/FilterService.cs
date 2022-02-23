@@ -37,9 +37,7 @@ namespace backend.Services
         {
             var countries = _context.Countries.ToList();
             var decades = _context.Decades.ToList();
-            // var directors = _context.Directors.ToList();
-            var directors = _context.Directors.Select(d => _mapper.Map<DirectorDto>(d)).ToList();
-            // var genres = _context.Genres.ToList();
+            var directors = _context.Directors.Select(d => _mapper.Map<DirectorDto>(d)).ToList(); 
             var genres = _context.Genres.Select(g => _mapper.Map<GenreDto>(g)).ToList();
 
             return new
