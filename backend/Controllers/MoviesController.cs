@@ -23,5 +23,13 @@ namespace backend.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        [Route("Get")]
+        public IActionResult GetMovies()
+        {
+            var movies = _movieService.GetMovie();
+            return Ok(movies);
+        }
     }
 }
