@@ -10,7 +10,7 @@ namespace backend.Dtos
         public Decade Decade { get; set; }
         public string Title { get; set; }
         public int Year { get; set; }
-        public List<Director> Directors { get; set; }
-        public List<Genre> Genres { get; set; }
+        public List<DirectorDto> Directors { get; set; }
+        public List<GenreDto> Genres { get; set; }
     }
 }
