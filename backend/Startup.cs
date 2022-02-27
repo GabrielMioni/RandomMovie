@@ -91,6 +91,7 @@ namespace backend
             services.AddSingleton<HtmlReader>();
             services.AddScoped<MovieService>();
             services.AddScoped<FilterService>();
+            services.AddScoped<MovieMetaDataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
