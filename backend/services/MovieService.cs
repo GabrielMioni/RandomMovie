@@ -36,14 +36,8 @@ namespace backend.Services
                 .Include(m => m.Movie_Genres)
                 .ThenInclude(mg => mg.Genre)
                 .ToList();
-            // .Include(m => m.Movie_Directors.Select(md => md.Director))
-            // .Include(m => m.Movie_Genres.Select(md => md.Genre));
 
-            var lookAtMe = movies.ToList();
-
-            var lookAtMe2 = movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
-
-            return lookAtMe2;
+            return movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
         }
 
         public async Task SaveMoviesAsync()
