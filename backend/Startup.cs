@@ -89,6 +89,7 @@ namespace backend
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<HtmlReader>();
+            services.AddScoped<LevenshteinDistanceService>();
             services.AddScoped<MovieService>();
             services.AddScoped<FilterService>();
             services.AddScoped<MovieMetaDataService>();
