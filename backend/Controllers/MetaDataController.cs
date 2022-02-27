@@ -43,5 +43,14 @@ namespace backend.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost]
+        [Route("Collect")]
+        public IActionResult CollectMetaData()
+        {
+            _metaDataService.GetMetaDataForMovie();
+
+            return Ok();
+        }
     }
 }
