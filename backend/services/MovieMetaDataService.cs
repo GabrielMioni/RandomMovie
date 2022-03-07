@@ -80,110 +80,8 @@ namespace backend.Services
 
             foreach (var directorDto in directorDtos)
             {
-                var possibleDirectors = GetPossibleDirectors(directorDto.Name);
+                var movieDictionary = GetDirectorMoviesDictionary(directorDto);
 
-                if (possibleDirectors.Count <= 0)
-                {
-                    continue;
-                }
-
-                var movieDictionary = new Dictionary<string, MovieSearchResult>();
-
-                foreach (var movieTitle in directorDto.Movies.Select(m => m.Title))
-                {
-                    if (movieTitle == "Remorques")
-                    {
-                        // blah = true;
-                    }
-                    movieDictionary[movieTitle] = null;
-                }
-
-                foreach (var possibleDirector in possibleDirectors)
-                {
-                    var directorFilmography = new PersonFilmography();
-
-                    foreach (var movieDto in directorDto.Movies)
-                    {
-                        var movieTitle = movieDto.Title;
-
-                        if (movieDictionary[movieTitle] != null)
-                        {
-                            continue;
-                        }
-
-                        var foundKnownFor = possibleDirector.known_for.Find(kf => FindFoundKnownForMovie(kf, movieDto));
-
-                        if (foundKnownFor != null)
-                        {
-                            movieDictionary[movieTitle] = foundKnownFor;
-                            continue;
-                        }
-
-                        if (directorFilmography.id == 0)
-                        {
-                            var filmography = GetMovieCreditsByPersonApiId(possibleDirector.id);
-                            if (filmography == null)
-                            {
-                                continue;
-                            }
-                            directorFilmography = filmography;
-                        }
-
-                        // var directorFilmography = GetMovieCreditsByPersonApiId(possibleDirector.id);
-                        var foundFilmography = directorFilmography.crew.Find(filmographyCrewResult => FindFoundKnownForMovie(filmographyCrewResult, movieDto, 10));
-
-                        if (foundFilmography != null)
-                        {
-                            movieDictionary[movieTitle] = foundFilmography;
-                        }
-                    }
-
-                    var nullMovies = movieDictionary.Where(dictionaryItem => dictionaryItem.Value == null).ToList();
-
-                    if (nullMovies.Count <= 0)
-                    {
-                        break;
-                    }
-                }
-
-                foreach (var movieTitle in directorDto.Movies.Select(movieDto => movieDto.Title))
-                {
-                    if (movieDictionary[movieTitle] != null)
-                    {
-                        continue;
-                    } else
-                    {
-                        Console.WriteLine("bringo");
-                    }
-                    var movieSearchByTitleResponse = SearchMovieByTitle(movieTitle);
-                    var movieSearchResults = movieSearchByTitleResponse.results;
-
-                    var movieDto = directorDto.Movies.Find(movieDto => movieDto.Title == movieTitle);
-
-                    var foundMovie = movieSearchResults.Find(movieResult => FindFoundKnownForMovie(movieResult, movieDto));
-
-                    if (foundMovie != null)
-                    {
-                        movieDictionary[movieTitle] = foundMovie;
-                        continue;
-                    }
-
-                    var page = 2;
-                    while (page < movieSearchByTitleResponse.total_pages)
-                    {
-                        var innerResponse = SearchMovieByTitle(movieTitle, page);
-                        page++;
-                        movieSearchResults = movieSearchResults.Concat(innerResponse.results).ToList();
-
-                        var innerFoundMovie = movieSearchResults.Find(movieResult => FindFoundKnownForMovie(movieResult, movieDto));
-
-                        if (foundMovie != null)
-                        {
-                            movieDictionary[movieTitle] = foundMovie;
-                            continue;
-                        }
-                    }
-                }
                 foreach (var kvp in movieDictionary)
                 {
                     var title = kvp.Value != null ? kvp.Value.title : "******Not Found*****";
@@ -194,11 +92,96 @@ namespace backend.Services
                         movieMetaList.Add(kvp.Value);
                     }
                 }
-
-                Console.WriteLine(movieDictionary);
             }
 
             return movieMetaList;
+        }
+
+        private Dictionary<string, MovieSearchResult> GetDirectorMoviesDictionary (DirectorDto directorDto)
+        {
+            var movieDictionary = new Dictionary<string, MovieSearchResult>();
+
+            foreach (var movieTitle in directorDto.Movies.Select(m => m.Title))
+            {
+                movieDictionary[movieTitle] = null;
+            }
+
+            var possibleDirectors = GetPossibleDirectors(directorDto.Name);
+
+            foreach (var possibleDirector in possibleDirectors)
+            {
+                var directorFilmography = new PersonFilmography();
+
+                foreach (var movieDto in directorDto.Movies)
+                {
+                    var movieTitle = movieDto.Title;
+
+                    if (movieDictionary[movieTitle] != null)
+                        continue;
+
+                    // Try to find the movie in the person search's 'known_for' property
+                    var foundMovieSearchResult = possibleDirector.known_for.Find(kf => FindFoundKnownForMovie(kf, movieDto));
+                    if (foundMovieSearchResult != null)
+                    {
+                        movieDictionary[movieTitle] = foundMovieSearchResult;
+                        continue;
+                    }
+
+                    // Try to find the movie in the director's credits.
+                    if (directorFilmography.id == 0)
+                    {
+                        directorFilmography = GetMovieCreditsByPersonApiId(possibleDirector.id);
+                    }
+                    var foundFilmography = directorFilmography.crew.Find(filmographyCrewResult => FindFoundKnownForMovie(filmographyCrewResult, movieDto, 10));
+                    if (foundFilmography != null)
+                    {
+                        movieDictionary[movieTitle] = foundFilmography;
+                    }
+                }
+
+                var nullMovies = movieDictionary.Where(dictionaryItem => dictionaryItem.Value == null).ToList();
+                if (nullMovies.Count <= 0)
+                    break;
+            }
+
+            // Try to find the movie by searching title
+            foreach (var movieDto in directorDto.Movies)
+            {
+                var movieTitle = movieDto.Title;
+
+                if (movieDictionary[movieTitle] != null)
+                    continue;
+
+                var movieSearch = SearchMovieByTitle(movieTitle);
+                var movieSearchResults = movieSearch.results;
+                var foundMovie = movieSearchResults.Find(movieResult => FindFoundKnownForMovie(movieResult, movieDto));
+
+                if (foundMovie != null)
+                {
+                    movieDictionary[movieTitle] = foundMovie;
+                    continue;
+                }
+
+                if (movieSearch.total_pages <= 1)
+                    continue;
+
+                var page = 2;
+                while (page < movieSearch.total_pages)
+                {
+                    var innerResponse = SearchMovieByTitle(movieTitle, page);
+                    var innerResult = innerResponse.results;
+                    var innerFoundMovie = innerResult.Find(movieResult => FindFoundKnownForMovie(movieResult, movieDto));
+
+                    if (foundMovie != null)
+                    {
+                        movieDictionary[movieTitle] = foundMovie;
+                        break;
+                    }
+                    page++;
+                }
+            }
+
+            return movieDictionary;
         }
 
         private List<PersonSearchResult> GetPossibleDirectors(string directorName)
