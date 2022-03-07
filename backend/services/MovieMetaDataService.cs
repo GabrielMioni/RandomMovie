@@ -121,7 +121,7 @@ namespace backend.Services
                         continue;
                     }
 
-                    // Initiate directorFilmography if it hasn't been
+                    // Set directorFilmography if it hasn't been
                     if (directorFilmography.id == 0)
                     {
                         var filmography = GetMovieCreditsByPersonApiId(possibleDirector.id);
