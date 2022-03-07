@@ -76,43 +76,15 @@ namespace backend.Services
         {
             var directorDtos = GetAllDirectors();
 
-            var blah = false;
-
             var movieMetaList = new List<MovieSearchResult>();
 
             foreach (var directorDto in directorDtos)
             {
-                var response = SearchMovieByDirector(directorDto.Name);
-                var results = response.results.ToList();
+                var possibleDirectors = GetPossibleDirectors(directorDto.Name);
 
-                if (blah)
-                {
-                    Console.WriteLine("bringo");
-                }
-
-                if (response.total_pages > 1)
-                {
-                    var currentPage = 2;
-                    while (currentPage < response.total_pages)
-                    {
-                        var newResponse = SearchMovieByDirector(directorDto.Name, currentPage);
-                        results = results.Concat(newResponse.results).ToList();
-                        currentPage++;
-                    }
-                }
-
-                var possibleDirectors = results.FindAll(r =>
-                    //r.known_for_department == "Directing" ||
-                    //r.known_for_department == "Writing" &&
-                    LevenshteinDistanceService.Compute(r.name, directorDto.Name) < 5);
                 if (possibleDirectors.Count <= 0)
                 {
                     continue;
-                }
-
-                if (possibleDirectors.Count > 1)
-                {
-                    Console.WriteLine("Huh.");
                 }
 
                 var movieDictionary = new Dictionary<string, MovieSearchResult>();
@@ -121,7 +93,7 @@ namespace backend.Services
                 {
                     if (movieTitle == "Remorques")
                     {
-                        blah = true;
+                        // blah = true;
                     }
                     movieDictionary[movieTitle] = null;
                 }
@@ -227,6 +199,26 @@ namespace backend.Services
             }
 
             return movieMetaList;
+        }
+
+        private List<PersonSearchResult> GetPossibleDirectors(string directorName)
+        {
+            var response = SearchMovieByDirector(directorName);
+            var results = response.results.ToList();
+
+            if (response.total_pages > 1)
+            {
+                var currentPage = 2;
+                while (currentPage < response.total_pages)
+                {
+                    var newResponse = SearchMovieByDirector(directorName, currentPage);
+                    results = results.Concat(newResponse.results).ToList();
+
+                    currentPage++;
+                }
+            }
+
+            return results.FindAll(r => LevenshteinDistanceService.Compute(r.name, directorName) < 5);
         }
 
         private bool FindFoundKnownForMovie(MovieSearchResult movieSearchResult, MovieDto movieDto, int yearTolerance = 2)
