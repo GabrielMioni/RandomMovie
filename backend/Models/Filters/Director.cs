@@ -6,7 +6,6 @@ namespace backend.Models.Filters
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
         public List<Movie_Director> Movie_Directors { get; set; }
     }
 }
