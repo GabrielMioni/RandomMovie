@@ -48,9 +48,8 @@ namespace backend.Controllers
         [Route("Collect")]
         public IActionResult CollectMetaData()
         {
-            _metaDataService.GetMetaDataForMovie();
-
-            return Ok();
+            var results = _metaDataService.CollectMoviesByDirector();
+            return Ok(results);
         }
     }
 }
