@@ -63,12 +63,6 @@ namespace backend.Services
                 return directorDto;
             }).ToList();
 
-            //var index = directorDtoList.FindIndex(d => d.Movies.Any(m => m.Title == "Remorques"));
-
-            //var test = directorDtoList.GetRange(index -1);
-
-            //return test;
-
             return directorDtoList;
         }
 
@@ -127,11 +121,17 @@ namespace backend.Services
                         continue;
                     }
 
-                    // Try to find the movie in the director's credits.
+                    // Initiate directorFilmography if it hasn't been
                     if (directorFilmography.id == 0)
                     {
-                        directorFilmography = GetMovieCreditsByPersonApiId(possibleDirector.id);
+                        var filmography = GetMovieCreditsByPersonApiId(possibleDirector.id);
+                        if (filmography.id <= 0)
+                            continue;
+
+                        directorFilmography = filmography;
                     }
+
+                    // Try to find the movie in the directorFilmography.
                     var foundFilmography = directorFilmography.crew.Find(filmographyCrewResult => FindFoundKnownForMovie(filmographyCrewResult, movieDto, 10));
                     if (foundFilmography != null)
                     {
