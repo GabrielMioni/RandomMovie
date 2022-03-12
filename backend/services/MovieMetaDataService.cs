@@ -53,6 +53,7 @@ namespace backend.Services
                     .ThenInclude(mg => mg.Movie_Genres)
                     .ThenInclude(mg => mg.Genre)
                 .Where(d => !d.Name.Equals(""))
+                .Take(10)
                 .ToList();
 
             var directorDtoList = directors.Select(d =>
@@ -72,21 +73,47 @@ namespace backend.Services
 
             var movieMetaList = new List<MovieSearchResult>();
 
+            var blah = new Dictionary<Movie, MovieMeta>();
+
             foreach (var directorDto in directorDtos)
             {
                 var movieDictionary = GetDirectorMoviesDictionary(directorDto);
 
                 foreach (var kvp in movieDictionary)
                 {
-                    var title = kvp.Value != null ? kvp.Value.title : "******Not Found*****";
-                    Debug.WriteLine($"{kvp.Key} - {title}");
+                    var movieDtoTitle = kvp.Key;
+                    var movieDto = directorDto.Movies.FirstOrDefault(m => m.Title == movieDtoTitle);
+                    var movieSearchResult = kvp.Value;
 
-                    if (kvp.Value != null)
+                    if (movieDto == null ||  movieSearchResult == null)
                     {
-                        movieMetaList.Add(kvp.Value);
+                        continue;
                     }
+
+                    // var movie = _context.Movies.FirstOrDefault(m => m.Id == movieDto.Id);
+                    var movieMeta = _mapper.Map<MovieMeta>(movieSearchResult);
+                    movieMeta.MovieId = movieDto.Id;
+
+                    _context.MovieMetas.Add(movieMeta);
                 }
+                _context.SaveChanges();
             }
+
+            //foreach (var kvp in blah)
+            //{
+            //    var movie = kvp.Key;
+            //    var movieMeta = kvp.Value;
+
+            //    movieMeta.Movie = movie;
+            //    _context.Update(movieMeta);
+
+            //    //movie.Meta = movieMeta;
+            //    //_context.Update(movie);
+
+            //    //movieMeta.Movie = movie;
+            //    //_context.MovieMetas.Add(movieMeta);
+            //}
+            //_context.SaveChanges();
 
             return movieMetaList;
         }
@@ -113,30 +140,8 @@ namespace backend.Services
                     if (movieDictionary[movieTitle] != null)
                         continue;
 
-                    // Try to find the movie in the person search's 'known_for' property
-                    var foundMovieSearchResult = possibleDirector.known_for.Find(kf => FindFoundKnownForMovie(kf, movieDto));
-                    if (foundMovieSearchResult != null)
-                    {
-                        movieDictionary[movieTitle] = foundMovieSearchResult;
-                        continue;
-                    }
-
-                    // Set directorFilmography if it hasn't been
-                    if (directorFilmography.id == 0)
-                    {
-                        var filmography = GetMovieCreditsByPersonApiId(possibleDirector.id);
-                        if (filmography.id <= 0)
-                            continue;
-
-                        directorFilmography = filmography;
-                    }
-
-                    // Try to find the movie in the directorFilmography.
-                    var foundFilmography = directorFilmography.crew.Find(filmographyCrewResult => FindFoundKnownForMovie(filmographyCrewResult, movieDto, 10));
-                    if (foundFilmography != null)
-                    {
-                        movieDictionary[movieTitle] = foundFilmography;
-                    }
+                    var movieResult = FindMovieSearchResultByDirector(movieDto, possibleDirector, ref directorFilmography);
+                    movieDictionary[movieTitle] = movieResult;
                 }
 
                 var nullMovies = movieDictionary.Where(dictionaryItem => dictionaryItem.Value == null).ToList();
@@ -152,33 +157,8 @@ namespace backend.Services
                 if (movieDictionary[movieTitle] != null)
                     continue;
 
-                var movieSearch = SearchMovieByTitle(movieTitle);
-                var movieSearchResults = movieSearch.results;
-                var foundMovie = movieSearchResults.Find(movieResult => FindFoundKnownForMovie(movieResult, movieDto));
-
-                if (foundMovie != null)
-                {
-                    movieDictionary[movieTitle] = foundMovie;
-                    continue;
-                }
-
-                if (movieSearch.total_pages <= 1)
-                    continue;
-
-                var page = 2;
-                while (page < movieSearch.total_pages)
-                {
-                    var innerResponse = SearchMovieByTitle(movieTitle, page);
-                    var innerResult = innerResponse.results;
-                    var innerFoundMovie = innerResult.Find(movieResult => FindFoundKnownForMovie(movieResult, movieDto));
-
-                    if (foundMovie != null)
-                    {
-                        movieDictionary[movieTitle] = foundMovie;
-                        break;
-                    }
-                    page++;
-                }
+                var foundMovieByTitle = FindMovieSearchResultByTitle(movieDto);
+                movieDictionary[movieTitle] = foundMovieByTitle;
             }
 
             return movieDictionary;
@@ -207,19 +187,12 @@ namespace backend.Services
         private bool FindFoundKnownForMovie(MovieSearchResult movieSearchResult, MovieDto movieDto, int yearTolerance = 2)
         {
             if (movieSearchResult.title == null || movieSearchResult.release_date == null)
-            {
                 return false;
-            }
 
             var regex = new Regex("[^a-zA-Z0-9 -]");
             var movieSearchResultTitle = regex.Replace(movieSearchResult.title, "").Trim();
             var movieSearchResultOriginalTitle = regex.Replace(movieSearchResult.original_title, "").Trim();
             var movieDtoTitle = regex.Replace(movieDto.Title, "").Trim();
-
-            //if (movieSearchResultTitle.Contains("100 Boyfriends") || movieSearchResultTitle.Contains("Tell Them We Are Rising"))
-            //{
-            //    Console.WriteLine("bringo");
-            //}
 
             var knownForYear = 0;
             Int32.TryParse(movieSearchResult.release_date.Split('-')[0], out knownForYear);
@@ -242,6 +215,66 @@ namespace backend.Services
             return (movieTitleDistance <= 3 || movieTitleOriginalDistance <= 3) && yearDifference <= yearTolerance;
         }
 
+        private MovieSearchResult FindMovieSearchResultByDirector(MovieDto movieDto, PersonSearchResult possibleDirector, ref PersonFilmography directorFilmography)
+        {
+            var movieTitle = movieDto.Title;
+
+            // Try to find the movie in the person search's 'known_for' property
+            var foundMovieSearchResult = possibleDirector.known_for.Find(kf => FindFoundKnownForMovie(kf, movieDto));
+            if (foundMovieSearchResult != null)
+            {
+                return foundMovieSearchResult;
+            }
+
+            // Try to find the movie in the director's filmography
+            if (directorFilmography.id == 0)
+            {
+                var filmography = GetMovieCreditsByPersonApiId(possibleDirector.id);
+                if (filmography.id > 0)
+                {
+                    directorFilmography = filmography;
+                } else
+                {
+                    return null;
+                }
+            }
+
+            var foundFilmographyResult = directorFilmography.crew.Find(filmographyCrewResult => FindFoundKnownForMovie(filmographyCrewResult, movieDto, 10));
+
+            return foundFilmographyResult;
+        }
+
+        private MovieSearchResult FindMovieSearchResultByTitle(MovieDto movieDto)
+        {
+            var movieTitle = movieDto.Title;
+            var movieSearch = SearchMovieByTitle(movieTitle);
+            var movieSearchResults = movieSearch.results;
+
+            var foundMovie = movieSearchResults.Find(movieResult => FindFoundKnownForMovie(movieResult, movieDto));
+
+            if (foundMovie != null)
+                return foundMovie;
+
+            if (movieSearch.total_pages <= 1)
+                return null;
+
+            var page = 2;
+            while (page < movieSearch.total_pages)
+            {
+                var innerResponse = SearchMovieByTitle(movieTitle, page);
+                var innerResult = innerResponse.results;
+                var innerFoundMovie = innerResult.Find(movieResult => FindFoundKnownForMovie(movieResult, movieDto));
+
+                if (foundMovie != null)
+                {
+                    return foundMovie;
+                }
+                page++;
+            }
+
+            return null;
+        }
+
         private bool FindContainedTitles (string movieTitleOne, string movieTitleTwo)
         {
             if (movieTitleOne.Length > 5 && movieTitleTwo.Length > 5)
@@ -249,148 +282,12 @@ namespace backend.Services
                 return movieTitleOne.Contains(movieTitleTwo);
             }
             return false;
-        }
-
-        public List<MovieMeta> CollectMovieMetaData()
-        {
-            var movieFromDb = _context.Movies
-                .Include(m => m.Country)
-                .Include(m => m.Decade)
-                .Include(m => m.Movie_Directors)
-                .ThenInclude(md => md.Director)
-                .Include(m => m.Movie_Genres)
-                .ThenInclude(mg => mg.Genre);
-
-            var movieDtos = movieFromDb.Select(m => _mapper.Map<MovieDto>(m));
-
-            var movieMetas = new List<MovieMeta>();
-
-            foreach (var movieDto in movieDtos)
-            {
-                System.Diagnostics.Debug.WriteLine(movieDto.Title);
-                var movieMeta = GetMetaDataForMovie(movieDto);
-                if (movieMeta != null)
-                {
-                    System.Diagnostics.Debug.WriteLine(movieMeta.Title);
-                    movieMetas.Add(movieMeta);
-                } else
-                {
-                    System.Diagnostics.Debug.WriteLine($"Unable to find {movieDto.Title}");
-                };
-            }
-
-            return movieMetas;
-        }
-
-        public MovieMeta GetMetaDataForMovie(MovieDto movieDto)
-        {
-            // var movie _context.Movies.
-            //var movieFromDb = _context.Movies
-            //    .Include(m => m.Country)
-            //    .Include(m => m.Decade)
-            //    .Include(m => m.Movie_Directors)
-            //    .ThenInclude(md => md.Director)
-            //    .Include(m => m.Movie_Genres)
-            //    .ThenInclude(mg => mg.Genre)
-            //    .FirstOrDefault(m => m.Title == "Mulholland Dr.");
-
-            //if (movieFromDb == null) return;
-
-            //var movieDto = _mapper.Map<MovieDto>(movieFromDb);
-
-            var movieSearchByTitle = SearchMovieByTitle(movieDto.Title);
-
-            var results = movieSearchByTitle.results;
-
-            if (movieSearchByTitle.total_pages > 1)
-            {
-                var page = 2;
-                while (page <= movieSearchByTitle.total_pages)
-                {
-                    var movieSearchPage = SearchMovieByTitle(movieDto.Title, page);
-                    var newResults = movieSearchPage.results;
-                    results = results.Concat(newResults).ToList();
-                    page++;
-                }
-            }
-
-            var movieMeta = new MovieMeta();
-
-            foreach (var movieResult in results)
-            {
-                int releasedYearInt = 0;
-
-                var releaseDate = movieResult.release_date;
-
-                if (releaseDate != null)
-                {
-                    Int32.TryParse(movieResult.release_date.Split('-')[0], out releasedYearInt);
-                }
-
-                if (releasedYearInt < 1900)
-                {
-                    continue;
-                }
-
-                var yearDifference = GetYearDifference(releasedYearInt, movieDto.Year);
-
-                if (yearDifference > 2)
-                {
-                    continue;
-                }
-
-                var distance = LevenshteinDistanceService.Compute(movieResult.title, movieDto.Title);
-
-                if (distance > 10)
-                {
-                    continue;
-                }
-
-                if (distance > 2)
-                {
-                    var directorMatched = CheckMovieDirectorByApiId(movieResult.id, movieDto.Directors);
-                    if (!directorMatched)
-                    {
-                        continue;
-                    }
-                }
-
-                movieMeta = _mapper.Map<MovieMeta>(movieResult);
-                movieMeta.MovieId = movieDto.Id;
-                break;
-            }
-
-            // return movieMeta;
-
-            return movieMeta.Id == 0 ? null : movieMeta;
-        }
+        }      
 
         private int GetYearDifference (int yearA, int yearB)
         {
             return yearA > yearB? yearA - yearB: yearB - yearA;
         }
-
-        private bool CheckMovieDirectorByApiId(int apiId, List<DirectorDto> directors)
-        {
-            var credits = GetMovieCreditsByApiId(apiId);
-            var directorNamesFromApi = credits.crew
-                .FindAll(c => c.job == "Director")
-                .Select(c => c.name)
-                .ToList();
-
-            var directorNamesFromDb = directors.Select(d => d.Name);
-
-            foreach (var name in directorNamesFromApi)
-            {
-                if (directorNamesFromDb.Contains(name))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public Credits GetMovieCreditsByApiId(int movieId)
         {
             var response = GetResponseFromMovieApi($"movie/{movieId}/credits", null);
