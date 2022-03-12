@@ -12,6 +12,10 @@
     <Compile Remove="Data\Migrations\20220205050519_AddDecade.Designer.cs" />
     <Compile Remove="Data\Migrations\20220220211347_UpdateMovieFilterDeleteBehavior.cs" />
     <Compile Remove="Data\Migrations\20220220211347_UpdateMovieFilterDeleteBehavior.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220308050716_AddMovieMetas.cs" />
+    <Compile Remove="Data\Migrations\20220308050716_AddMovieMetas.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220308054442_AddMovieOnMovieMeta.cs" />
+    <Compile Remove="Data\Migrations\20220308054442_AddMovieOnMovieMeta.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

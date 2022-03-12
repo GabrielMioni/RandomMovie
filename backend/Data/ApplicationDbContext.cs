@@ -12,6 +12,7 @@ namespace backend.Data
         public DbSet<Director> Directors { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<MovieMeta> MovieMetas { get; set; }
 
         public DbSet<Movie_Director> Movie_Directors { get; set; }
         public DbSet<Movie_Genre> Movie_Genres { get; set; }
