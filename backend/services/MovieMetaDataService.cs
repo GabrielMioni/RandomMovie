@@ -38,6 +38,22 @@ namespace backend.Services
             _levService = levenshteinDistanceService;
         }
 
+        public Configuration GetConfigurationData()
+        {
+            var response = CollectMovieMetaConfigurationData();
+
+            var imagesConfig = response.images;
+
+            var baseUrl = imagesConfig.base_url;
+            var secureBaseUrl = imagesConfig.base_url;
+            var posterSizes = imagesConfig.poster_sizes;
+            var backdropSizes = imagesConfig.backdrop_sizes;
+            var logoSizes = imagesConfig.logo_sizes;
+
+
+            return response;
+        }
+
         //public List<DirectorDto> CollectMovieMetaDataThroughDirector ()
         public List<DirectorDto> GetAllDirectors()
         {
@@ -319,6 +335,13 @@ namespace backend.Services
             var movieSearchResponse = JsonSerializer.Deserialize<MovieSearch>(response);
 
             return movieSearchResponse;
+        }
+
+        public Configuration CollectMovieMetaConfigurationData ()
+        {
+            var response = GetResponseFromMovieApi("configuration");
+            var configuration = JsonSerializer.Deserialize<Configuration>(response);
+            return configuration;
         }
 
         private string GetResponseFromMovieApi (string endpoint, string queryValue = null, int page = 0)

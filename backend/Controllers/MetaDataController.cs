@@ -51,5 +51,13 @@ namespace backend.Controllers
             var results = _metaDataService.CollectMoviesByDirector();
             return Ok(results);
         }
+
+        [HttpPost]
+        [Route("CollectConfiguration")]
+        public IActionResult CollectMetaConfiguration()
+        {
+            var results = _metaDataService.GetConfigurationData();
+            return Ok(results);
+        }
     }
 }
