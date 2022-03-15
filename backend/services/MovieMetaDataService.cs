@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using backend.Data;
 using backend.Dtos;
+using backend.Extensions;
 using backend.Models;
 using backend.Models.Deserializers;
 using backend.Models.Filters;
@@ -85,8 +86,9 @@ namespace backend.Services
         }
 
         //public List<DirectorDto> CollectMovieMetaDataThroughDirector ()
-        public List<DirectorDto> GetAllDirectors()
+        public List<DirectorDto> GetAllDirectorsAsync()
         {
+
             var directors = _context.Directors
                 .Include(d => d.Movie_Directors)
                     .ThenInclude(md => md.Movie)
@@ -99,7 +101,6 @@ namespace backend.Services
                     .ThenInclude(mg => mg.Movie_Genres)
                     .ThenInclude(mg => mg.Genre)
                 .Where(d => !d.Name.Equals(""))
-                .Take(10)
                 .ToList();
 
             var directorDtoList = directors.Select(d =>
@@ -113,9 +114,11 @@ namespace backend.Services
             return directorDtoList;
         }
 
-        public List<MovieSearchResult> CollectMoviesByDirector()
+        public async Task<List<MovieSearchResult>> CollectMoviesByDirectorAsync()
         {
-            var directorDtos = GetAllDirectors();
+            await _context.TruncateTable("MovieMetas");
+
+            var directorDtos = GetAllDirectorsAsync();
 
             var movieMetaList = new List<MovieSearchResult>();
 

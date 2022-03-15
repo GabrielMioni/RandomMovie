@@ -3,6 +3,7 @@ using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace backend.Controllers
 {
@@ -46,9 +47,9 @@ namespace backend.Controllers
 
         [HttpPost]
         [Route("Collect")]
-        public IActionResult CollectMetaData()
+        public async Task<IActionResult> CollectMetaDataAsync()
         {
-            var results = _metaDataService.CollectMoviesByDirector();
+            var results = await _metaDataService.CollectMoviesByDirectorAsync();
             return Ok(results);
         }
 
