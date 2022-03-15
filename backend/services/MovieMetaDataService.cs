@@ -50,6 +50,36 @@ namespace backend.Services
             var backdropSizes = imagesConfig.backdrop_sizes;
             var logoSizes = imagesConfig.logo_sizes;
 
+            var movieMetaUrl = new MovieMetaUrl
+            {
+                BaseUrl = baseUrl,
+                SecureBaseUrl = secureBaseUrl
+            };
+
+            _context.MovieMetaUrls.Add(movieMetaUrl);
+
+            var imageSizeDictionary = new Dictionary<string, List<string>>();
+
+            imageSizeDictionary.Add(ImageTypes.Poster, posterSizes);
+            imageSizeDictionary.Add(ImageTypes.Backdrop, backdropSizes);
+            imageSizeDictionary.Add(ImageTypes.Logo, logoSizes);
+
+            foreach (var kvp in imageSizeDictionary)
+            {
+                var type = kvp.Key;
+                var sizes = kvp.Value;
+
+                foreach (var size in sizes)
+                {
+                    var metaImageSieze = new MovieMetaImageSize
+                    {
+                        Size = size,
+                        Type = type
+                    };
+                    _context.MovieMetaImageSizes.Add(metaImageSieze);                    
+                }
+                _context.SaveChanges();
+            }
 
             return response;
         }

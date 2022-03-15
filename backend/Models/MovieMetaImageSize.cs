@@ -1,6 +1,6 @@
 ﻿namespace backend.Models
 {
-    public class MetaImageSize
+    public class MovieMetaImageSize
     {
         public int Id { get; set; }
         public string Size { get; set; }
