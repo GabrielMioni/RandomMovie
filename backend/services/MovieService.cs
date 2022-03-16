@@ -5,6 +5,7 @@ using backend.Dtos;
 using backend.Extensions;
 using backend.Models;
 using backend.Models.Filters;
+using backend.Requests;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,16 +27,44 @@ namespace backend.Services
             _mapper = mapper;
         }
 
-        public List<MovieDto> GetMovie()
+        public List<MovieDto> GetRandomMovie(RandomMovieRequest req = null)
         {
-            var movies = _context.Movies
+            IQueryable<Movie> movieQuery = _context.Movies
                 .Include(m => m.Country)
                 .Include(m => m.Decade)
+                .Include(m => m.Meta)
                 .Include(m => m.Movie_Directors)
                 .ThenInclude(md => md.Director)
                 .Include(m => m.Movie_Genres)
                 .ThenInclude(mg => mg.Genre)
-                .ToList();
+                .AsQueryable();
+
+            var countryIds = req.CountryIds ?? new List<int>();
+            var decadeIds = req.DecadeIds ?? new List<int>();
+            var directorIds = req.DirectorIds ?? new List<int>();
+            var genreIds = req.GenreIds ?? new List<int>();
+
+            foreach (var directorId in directorIds)
+            {
+                movieQuery = movieQuery.Where(m => m.Movie_Directors.Any(md => md.DirectorId == directorId));
+            }
+
+            foreach (var genreId in genreIds)
+            {
+                movieQuery = movieQuery.Where(m => m.Movie_Genres.Any(mg => mg.GenreId == genreId));
+            }
+
+            foreach(var decadeId in decadeIds)
+            {
+                movieQuery = movieQuery.Where(m => m.Decade.Id == decadeId);
+            }
+
+            foreach (var countryId in countryIds)
+            {
+                movieQuery = movieQuery.Where(m => m.Country.Id == countryId);
+            }
+
+            var movies = movieQuery.ToList();
 
             return movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
         }

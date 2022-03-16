@@ -1,4 +1,5 @@
-﻿using backend.Services;
+﻿using backend.Requests;
+using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -25,10 +26,10 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        [Route("Get")]
-        public IActionResult GetMovies()
+        [Route("GetRandomMovie")]
+        public IActionResult GetMovies(RandomMovieRequest request)
         {
-            var movies = _movieService.GetMovie();
+            var movies = _movieService.GetRandomMovie(request);
             return Ok(movies);
         }
     }
