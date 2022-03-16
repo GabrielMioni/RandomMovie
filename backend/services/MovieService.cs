@@ -82,6 +82,7 @@ namespace backend.Services
             await _context.TruncateTable("Movies");
             await _context.TruncateTable("Movie_Directors");
             await _context.TruncateTable("Movie_Genres");
+            await _context.TruncateTable("MovieMetas");
 
             var counter = 0;
 
