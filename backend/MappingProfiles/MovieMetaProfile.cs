@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using backend.Dtos;
 using backend.Models;
 using backend.Models.Deserializers;
 
@@ -15,6 +16,8 @@ namespace backend.MappingProfiles
                 .ForMember(dest => dest.PosterPath, opt => opt.MapFrom(src => src.poster_path))
                 .ForMember(dest => dest.ReleasedDate, opt => opt.MapFrom(src => src.release_date))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.title));
+
+            CreateMap<MovieMeta, MovieMetaDto>();
         }
     }
 }

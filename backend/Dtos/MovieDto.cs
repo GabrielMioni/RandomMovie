@@ -8,6 +8,7 @@ namespace backend.Dtos
         public int Id { get; set; }
         public Country Country { get; set; }
         public Decade Decade { get; set; }
+        public MovieMetaDto Meta { get; set; }
         public string Title { get; set; }
         public int Year { get; set; }
         public List<DirectorDto> Directors { get; set; }
