@@ -29,8 +29,8 @@ namespace backend.Controllers
         [Route("GetRandomMovie")]
         public IActionResult GetMovies(RandomMovieRequest request)
         {
-            var movies = _movieService.GetRandomMovie(request);
-            return Ok(movies);
+            var movie = _movieService.GetRandomMovieDto(request);
+            return Ok(movie);
         }
     }
 }
