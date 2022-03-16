@@ -44,25 +44,17 @@ namespace backend.Services
             var directorIds = req.DirectorIds ?? new List<int>();
             var genreIds = req.GenreIds ?? new List<int>();
 
-            foreach (var directorId in directorIds)
-            {
-                movieQuery = movieQuery.Where(m => m.Movie_Directors.Any(md => md.DirectorId == directorId));
-            }
+            if (countryIds.Any())
+                movieQuery = movieQuery.Where(m => countryIds.Contains(m.Country.Id));
 
-            foreach (var genreId in genreIds)
-            {
-                movieQuery = movieQuery.Where(m => m.Movie_Genres.Any(mg => mg.GenreId == genreId));
-            }
+            if (decadeIds.Any())
+                movieQuery = movieQuery.Where(m => decadeIds.Contains(m.Decade.Id));
 
-            foreach(var decadeId in decadeIds)
-            {
-                movieQuery = movieQuery.Where(m => m.Decade.Id == decadeId);
-            }
+            if (directorIds.Any())
+                movieQuery = movieQuery.Where(m => m.Movie_Directors.Any(md => directorIds.Contains(md.DirectorId)));
 
-            foreach (var countryId in countryIds)
-            {
-                movieQuery = movieQuery.Where(m => m.Country.Id == countryId);
-            }
+            if (genreIds.Any())
+                movieQuery = movieQuery.Where(m => m.Movie_Genres.Any(mg => genreIds.Contains(mg.GenreId)));
 
             var movies = movieQuery.ToList();
 
