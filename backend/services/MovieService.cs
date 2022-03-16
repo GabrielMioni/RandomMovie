@@ -27,7 +27,23 @@ namespace backend.Services
             _mapper = mapper;
         }
 
-        public List<MovieDto> GetRandomMovie(RandomMovieRequest req = null)
+        public MovieDto GetRandomMovieDto(RandomMovieRequest req = null)
+        {
+            var random = new Random();
+
+            var movies = GetMoviesByRequestData(req);
+            var moviesCount = movies.Count();
+
+            if (moviesCount <= 0)
+                return null;
+
+            var index = random.Next(0, moviesCount);
+            var movie = movies[index];
+
+            return _mapper.Map<MovieDto>(movie);
+        }
+
+        public List<Movie> GetMoviesByRequestData(RandomMovieRequest req = null)
         {
             IQueryable<Movie> movieQuery = _context.Movies
                 .Include(m => m.Country)
@@ -56,9 +72,7 @@ namespace backend.Services
             if (genreIds.Any())
                 movieQuery = movieQuery.Where(m => m.Movie_Genres.Any(mg => genreIds.Contains(mg.GenreId)));
 
-            var movies = movieQuery.ToList();
-
-            return movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
+            return movieQuery.ToList();
         }
 
         public async Task SaveMoviesAsync()
