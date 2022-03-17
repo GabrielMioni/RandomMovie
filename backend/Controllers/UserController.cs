@@ -57,6 +57,10 @@ namespace backend.Controllers
             var userData = await _userManager.FindByNameAsync(model.UserName);
             var passwordIsCorrect = await _userManager.CheckPasswordAsync(userData, model.Password);
 
+            //string resetToken = await _userManager.GeneratePasswordResetTokenAsync(userData);
+            //IdentityResult passwordChangeResult = await _userManager.ResetPasswordAsync(userData, resetToken, "password");
+
+
             if (userData != null && passwordIsCorrect)
             {
                 var settings = _appSettings.JWT_Secret;
