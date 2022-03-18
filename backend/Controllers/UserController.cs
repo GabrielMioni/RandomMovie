@@ -1,4 +1,5 @@
 ﻿using backend.Models;
+using backend.Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -52,14 +53,10 @@ namespace backend.Controllers
         [HttpPost]
         [Route("Login")]
         // POST : /api/User/Login
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginRequest model)
         {
             var userData = await _userManager.FindByNameAsync(model.UserName);
             var passwordIsCorrect = await _userManager.CheckPasswordAsync(userData, model.Password);
-
-            //string resetToken = await _userManager.GeneratePasswordResetTokenAsync(userData);
-            //IdentityResult passwordChangeResult = await _userManager.ResetPasswordAsync(userData, resetToken, "password");
-
 
             if (userData != null && passwordIsCorrect)
             {
