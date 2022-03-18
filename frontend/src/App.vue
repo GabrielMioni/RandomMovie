@@ -54,9 +54,11 @@ export default {
   }),
   mounted () {
     this.initUserData()
+    this.setConfigurationDetails()
   },
   methods: {
-    ...mapActions('user', ['initUserData'])
+    ...mapActions('user', ['initUserData']),
+    ...mapActions('meta', ['setConfigurationDetails'])
   }
 }
 </script>
