@@ -18,6 +18,10 @@ namespace backend.MappingProfiles
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.title));
 
             CreateMap<MovieMeta, MovieMetaDto>();
+
+            CreateMap<MovieMetaUrl, BaseUrlsDto>();
+
+            CreateMap<MovieMetaImageSize, ImageSizeDto>();
         }
     }
 }
