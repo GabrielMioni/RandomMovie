@@ -5,6 +5,7 @@ using backend.Extensions;
 using backend.Models;
 using backend.Models.Deserializers;
 using backend.Models.Filters;
+using backend.Requests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -37,6 +38,66 @@ namespace backend.Services
             ApiKey = _config["MovieDbApi:ApiKey"];
             RootUrl = _config["MovieDbApi:Url"];
             _levService = levenshteinDistanceService;
+        }
+
+        public ConfigurationPayload GetConfigurationDetails ()
+        {
+            var baseUrls = _context.MovieMetaUrls.FirstOrDefault();
+
+            var posterSizes = GetImageSizeByType(ImageTypes.Poster);
+            var backDropSizes = GetImageSizeByType(ImageTypes.Backdrop);
+            var logoSizes = GetImageSizeByType(ImageTypes.Logo);
+
+            var payload = new ConfigurationPayload
+            {
+                BaseUrls = _mapper.Map<BaseUrlsDto>(baseUrls),
+                BackDropSizes = backDropSizes,
+                LogoSizes = logoSizes,
+                PosterSizes = posterSizes,
+            };
+
+            return payload;
+        }
+
+        private Dictionary<string, string> GetImageSizeByType (string type)
+        {
+            var sizes = _context.MovieMetaImageSizes
+                .Where(size => size.Type == type && size.Size != "original")
+                .Select(size => size.Size)
+                .ToList()
+                .OrderBy(size =>
+                {
+                    string numberString = Regex.Replace(size, "[^0-9.]", "");
+                    var number = 0;
+                    Int32.TryParse(numberString, out number);
+                    return number;
+                })
+                .ToList();
+
+            var isEven = sizes.Count % 2 == 0;
+
+            var sizeDictionary = new Dictionary<string, string>();
+
+            if (isEven && sizes.Count >= 6)
+            {
+                sizeDictionary.Add("xs", sizes[0]); // w92
+                sizeDictionary.Add("sm", sizes[1]); // w154
+                sizeDictionary.Add("md", sizes[2]); // w185
+                sizeDictionary.Add("lg", sizes[3]); // w342
+                sizeDictionary.Add("xl", sizes[4]); // w500
+                sizeDictionary.Add("xxl", sizes[5]); // w780
+
+            } else if (!isEven && sizes.Count <= 3)
+            {
+                sizeDictionary.Add("sm", sizes[0]);
+                sizeDictionary.Add("md", sizes[1]);
+                sizeDictionary.Add("lg", sizes[2]);
+            }
+
+            sizeDictionary.Add("original", "original");
+
+
+            return sizeDictionary;
         }
 
         public Configuration GetConfigurationData()
