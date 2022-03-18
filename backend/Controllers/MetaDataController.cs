@@ -18,13 +18,12 @@ namespace backend.Controllers
             _metaDataService = metaDataService;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("Get")]
         public IActionResult GetMetaData ()
         {
-            var response = _metaDataService.SearchMovieByTitle("A mother should be loved");
-
-            return Ok(response);
+            var configDetails = _metaDataService.GetConfigurationDetails();
+            return Ok(configDetails);
         }
 
         [HttpPost]
