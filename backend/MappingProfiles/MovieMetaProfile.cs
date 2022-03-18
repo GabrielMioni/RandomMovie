@@ -20,8 +20,6 @@ namespace backend.MappingProfiles
             CreateMap<MovieMeta, MovieMetaDto>();
 
             CreateMap<MovieMetaUrl, BaseUrlsDto>();
-
-            CreateMap<MovieMetaImageSize, ImageSizeDto>();
         }
     }
 }
