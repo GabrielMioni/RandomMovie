@@ -1,5 +1,5 @@
 <template>
-  <v-container class="fill-height">
+  <v-container>
     <v-row>
       <v-col>
         <v-btn
@@ -13,10 +13,12 @@
       <v-col
         :cols="12"
         class="d-flex justify-center">
-        <v-card width="80%">
-          <v-card-text>
+        <v-card
+          width="80%"
+          min-height="800px">
+          <v-card-text class="fill-height">
             <v-container fill-height fluid>
-              <v-row>
+              <v-row class="fill-height">
                 <v-col>
                   <movie-image
                     v-if="movie.meta.posterPath"
@@ -26,7 +28,9 @@
                 </v-col>
                 <v-col>
                   <v-row class="d-flex fill-height flex-column">
-                    <v-col cols="11">
+                    <v-col
+                      cols="11"
+                      class="d-flex align-center">
                       <div>
                         <h1 class="pb-3">{{ movie.title }}</h1>
                         <p>
@@ -37,7 +41,11 @@
                       </div>
                     </v-col>
                     <v-col class="d-flex flex-column justify-end pa-0">
-                      <v-btn width="100%">Find another movie</v-btn>
+                      <v-btn
+                        @click="clickGetMovie"
+                        width="100%">
+                        Find another movie
+                      </v-btn>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -101,5 +109,8 @@ export default {
 </script>
 
 <style scoped>
+.random-movie {
+  min-height: 80%;
+}
 
 </style>
