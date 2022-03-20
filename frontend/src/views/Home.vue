@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn @click="toggleFilters">
+    <v-btn @click="toggleFilters(true)">
       Filters
     </v-btn>
     <random-movie></random-movie>
@@ -29,7 +29,6 @@ export default {
   },
   methods: {
     toggleFilters (value) {
-      console.log({ clicko: value })
       this.filtersOpen = value
     }
   }
