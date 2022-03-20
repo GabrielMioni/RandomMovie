@@ -1,15 +1,6 @@
 <template>
   <v-container>
     <v-row>
-      <v-col>
-        <v-btn
-          @click="clickGetMovie">
-          Gimme
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row
-      v-if="movie.title.trim().length > 0">
       <v-col
         :cols="12"
         class="d-flex justify-center">
@@ -19,36 +10,56 @@
           <v-card-text class="fill-height">
             <v-container fill-height fluid>
               <v-row class="fill-height">
-                <v-col>
-                  <movie-image
-                    v-if="movie.meta.posterPath"
-                    :image-path="movie.meta['posterPath']"
-                    original>
-                  </movie-image>
-                </v-col>
-                <v-col>
-                  <v-row class="d-flex fill-height flex-column">
-                    <v-col
-                      cols="11"
-                      class="d-flex align-center">
-                      <div>
-                        <h1 class="pb-3">{{ movie.title }}</h1>
-                        <p>
-                          Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
-                          {{ originalLanguage }}
-                        </p>
-                        <p>{{ movie.meta.overview }}</p>
-                      </div>
-                    </v-col>
-                    <v-col class="d-flex flex-column justify-end pa-0">
-                      <v-btn
-                        @click="clickGetMovie"
-                        width="100%">
-                        Find another movie
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-col>
+                <template v-if="movieLoaded">
+                  <v-col>
+                    <movie-image
+                      v-if="movie.meta.posterPath"
+                      :image-path="movie.meta['posterPath']"
+                      original>
+                    </movie-image>
+                  </v-col>
+                  <v-col>
+                    <v-row class="d-flex fill-height flex-column">
+                      <v-col
+                        cols="11"
+                        class="d-flex align-center">
+                        <div>
+                          <h1 class="pb-3">{{ movie.title }}</h1>
+                          <p>
+                            Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
+                            {{ originalLanguage }}
+                          </p>
+                          <p>{{ movie.meta.overview }}</p>
+                        </div>
+                      </v-col>
+                      <v-col class="d-flex flex-column justify-end pa-0">
+                        <v-btn
+                          @click="clickGetMovie"
+                          width="100%">
+                          Find another movie
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </template>
+                <template v-else>
+                  <v-spacer></v-spacer>
+                  <v-col
+                    cols="12"
+                    v-ripple
+                    style="cursor: pointer"
+                    @click="clickGetMovie">
+                    <div class="d-flex flex-column align-center justify-center fill-height">
+                      <v-icon
+                        x-large
+                        class="mb-3">
+                        mdi-filmstrip
+                      </v-icon>
+                      Click to get a random movie.
+                    </div>
+                  </v-col>
+                  <v-spacer></v-spacer>
+                </template>
               </v-row>
             </v-container>
           </v-card-text>
@@ -77,7 +88,8 @@ export default {
         meta: {},
         title: '',
         year: 0
-      }
+      },
+      movieLoaded: false
     }
   },
   computed: {
@@ -101,6 +113,7 @@ export default {
     clickGetMovie () {
       getRandomMovie()
         .then(response => {
+          this.movieLoaded = true
           this.movie = response.data
         })
     }
