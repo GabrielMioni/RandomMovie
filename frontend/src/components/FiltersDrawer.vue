@@ -34,8 +34,27 @@
                 </v-list>
               </v-col>
               <v-divider vertical></v-divider>
-              <v-col cols="5">
-                Jangles.
+              <v-col
+                cols="8"
+                class="pa-1">
+                <v-row>
+                  <v-col cols="12">
+                    <h3>Genres</h3>
+                  </v-col>
+                  <v-col
+                    v-for="(genre, index) in genres"
+                    :key="`genre-filter-${index}`"
+                    class="py-0"
+                    cols="6">
+                    <v-checkbox
+                      v-model="selectedGenres"
+                      dense
+                      hide-details
+                      :label="genre.name"
+                      :value="genre.id">
+                    </v-checkbox>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-container>
@@ -57,7 +76,8 @@ export default {
         'Decades',
         'Countries',
         'Directors'
-      ]
+      ],
+      selectedGenres: []
     }
   },
   props: {
