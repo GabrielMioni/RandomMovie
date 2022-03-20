@@ -4,6 +4,7 @@ using backend.Data;
 using backend.Dtos;
 using backend.Extensions;
 using backend.Models.Filters;
+using backend.Requests;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -40,13 +41,9 @@ namespace backend.Services
             var directors = _context.Directors.Select(d => _mapper.Map<DirectorDto>(d)).ToList(); 
             var genres = _context.Genres.Select(g => _mapper.Map<GenreDto>(g)).ToList();
 
-            return new
-            {
-                countries = new { data = countries, count = countries.Count },
-                decades = new { data = decades, count = decades.Count },
-                directors = new { data = directors, count = directors.Count },
-                genres = new { data = genres, count = genres.Count }
-            };
+            var filterRequest = new FiltersRequest(countries, decades, directors, genres);
+
+            return filterRequest;
         }
 
         private async Task SaveAllFiltersAsync()
