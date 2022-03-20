@@ -1,12 +1,12 @@
 import { getFilters } from '@/api/filters'
 
-const storeFilters = ({ commit }) => {
+const setFilters = ({ commit }) => {
   getFilters().then(response => {
-    const { data } = response
-    console.log(data)
+    const filters = response.data
+    commit('SET_FILTERS', filters)
   })
 }
 
 export default {
-  storeFilters
+  setFilters
 }

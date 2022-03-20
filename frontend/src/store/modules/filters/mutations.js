@@ -1,19 +1,12 @@
 
-export const SET_CONFIGURATION_DETAILS = (state, payload) => {
-  const {
-    baseUrls: { baseUrl, secureBaseUrl },
-    backDropSizes,
-    logoSizes,
-    posterSizes
-  } = payload
-
-  state.baseUrl = baseUrl
-  state.secureBaseUrl = secureBaseUrl
-  state.backdropSizes = backDropSizes
-  state.logoSizes = logoSizes
-  state.posterSizes = posterSizes
+export const SET_FILTERS = (state, payload) => {
+  const { countries, decades, directors, genres } = payload
+  state.countries = countries
+  state.decades = decades
+  state.directors = directors
+  state.genres = genres
 }
 
 export default {
-  SET_CONFIGURATION_DETAILS
+  SET_FILTERS
 }
