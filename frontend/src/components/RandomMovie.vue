@@ -15,21 +15,29 @@
         class="d-flex justify-center">
         <v-card width="80%">
           <v-card-text>
-            <v-container fluid>
-              <v-row>
+            <v-container fill-height fluid>
+              <v-row
+                align="center"
+                justify="center">
                 <v-col>
                   <movie-image
+                    v-if="movie.meta.posterPath"
                     :image-path="movie.meta['posterPath']"
-                    xl>
+                    original>
                   </movie-image>
                 </v-col>
                 <v-col>
-                  <h1 class="pb-3">{{ movie.title }}</h1>
-                  <p>
-                    Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
-                    {{ originalLanguage }}
-                  </p>
-                  <p>{{ movie.meta.overview }}</p>
+                  <div>
+                    <h1 class="pb-3">{{ movie.title }}</h1>
+                    <p>
+                      Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
+                      {{ originalLanguage }}
+                    </p>
+                    <p>{{ movie.meta.overview }}</p>
+                  </div>
+                  <v-card-actions>
+                    <v-btn>Gimme</v-btn>
+                  </v-card-actions>
                 </v-col>
               </v-row>
             </v-container>
