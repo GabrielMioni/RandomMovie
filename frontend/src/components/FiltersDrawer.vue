@@ -5,26 +5,59 @@
     absolute
     temporary
     right>
-    <v-container>
-      <v-row>
-        <v-btn @click="close">
+    <v-card
+      height="100%"
+      width="100%">
+      <v-toolbar elevation="0">
+        <v-spacer></v-spacer>
+        <v-btn
+          depressed
+          fab
+          color="transparent"
+          @click="close">
           <v-icon icon>mdi-close</v-icon>
         </v-btn>
-      </v-row>
-    </v-container>
-    <v-list-item>
-      <v-list-item-title>
-        Hi.
-      </v-list-item-title>
-    </v-list-item>
+      </v-toolbar>
+      <v-card-text class="fill-height">
+        <v-container class="fill-height align-content-start">
+          <v-row class="fill-height">
+            <v-col cols="4">
+              <v-list>
+                <v-list-item
+                  v-for="(filter, index) in filterTypes"
+                  :key="`filter-${index}`">
+                  <v-list-item-title>
+                    {{ filter }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-col>
+            <v-divider vertical></v-divider>
+            <v-col cols="5">
+              Jangles.
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+    </v-card>
   </v-navigation-drawer>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'FiltersDrawer',
+  data () {
+    return {
+      filterTypes: [
+        'Genres',
+        'Decades',
+        'Countries',
+        'Directors'
+      ]
+    }
+  },
   props: {
     filtersOpen: {
       type: Boolean,
@@ -33,9 +66,10 @@ export default {
   },
   mounted () {
     console.log('look at me I am the filters guys')
-    this.storeFilters()
+    this.setFilters()
   },
   computed: {
+    ...mapGetters('filters', ['genres', 'decades', 'countries', 'directors']),
     filterIsOpenLocal: {
       get () {
         return this.filtersOpen
@@ -46,7 +80,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('filters', ['storeFilters']),
+    ...mapActions('filters', ['setFilters']),
     close () {
       this.filterIsOpenLocal = false
     }
