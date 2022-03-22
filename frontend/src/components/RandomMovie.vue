@@ -10,7 +10,16 @@
           <v-card-text class="fill-height">
             <v-container fill-height fluid>
               <v-row class="fill-height">
-                <template v-if="movieLoaded">
+                <v-col
+                  v-if="movieLoading"
+                  class="align-center col d-flex justify-center">
+                  <v-progress-circular
+                    :size="50"
+                    indeterminate>
+                  </v-progress-circular>
+                </v-col>
+                <template
+                  v-else-if="initialized">
                   <v-col>
                     <movie-image
                       :movie-details="movie.meta"
@@ -89,7 +98,8 @@ export default {
         title: '',
         year: 0
       },
-      movieLoaded: false
+      movieLoading: false,
+      initialized: false
     }
   },
   computed: {
@@ -119,10 +129,18 @@ export default {
         directorIds: this.selectedDirectors
       }
 
+      this.movieLoading = true
+
       getRandomMovie(params)
         .then(response => {
-          this.movieLoaded = true
+          this.initialized = true
           this.movie = response.data
+        })
+        .catch(error => console.error(error))
+        .finally(() => {
+          setTimeout(() => {
+            this.movieLoading = false
+          }, 1000)
         })
     }
   }
