@@ -13,9 +13,8 @@
                 <template v-if="movieLoaded">
                   <v-col>
                     <movie-image
-                      v-if="movie.meta.posterPath"
-                      :image-path="movie.meta['posterPath']"
-                      original>
+                      :movie-details="movie.meta"
+                      lg>
                     </movie-image>
                   </v-col>
                   <v-col>
@@ -29,7 +28,7 @@
                             Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
                             {{ originalLanguage }}
                           </p>
-                          <p>{{ movie.meta.overview }}</p>
+                          <p>{{ movie.meta ? movie.meta.overview : '' }}</p>
                         </div>
                       </v-col>
                       <v-col class="d-flex flex-column justify-end pa-0">
@@ -82,11 +81,11 @@ export default {
   data () {
     return {
       movie: {
-        country: {},
-        decade: {},
+        country: null,
+        decade: null,
         directors: [],
         genres: [],
-        meta: {},
+        meta: null,
         title: '',
         year: 0
       },
@@ -104,11 +103,11 @@ export default {
       return `${directedByString.substring(0, lastIndexComma)} and ${directedByString.substring(lastIndexComma + 1)}`
     },
     originalLanguage () {
-      if (Object.keys(this.movie.meta).length <= 0) {
-        return ''
+      if (this.movie.meta !== null) {
+        const language = new Intl.DisplayNames(['en'], { type: 'language' })
+        return language.of(this.movie.meta.originalLanguage)
       }
-      const language = new Intl.DisplayNames(['en'], { type: 'language' })
-      return language.of(this.movie.meta.originalLanguage)
+      return ''
     }
   },
   methods: {
