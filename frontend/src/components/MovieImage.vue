@@ -1,9 +1,24 @@
 <template>
-  <v-img
-    :src="imageUri"
-    :width="width"
-    :alt="alt">
-  </v-img>
+  <div class="fill-height d-flex align-center justify-center">
+    <v-img
+      v-if="imagePath"
+      :alt="alt"
+      :src="imageUri"
+      :width="width"
+      contain
+      max-height="650px">
+    </v-img>
+    <div
+      v-else
+      class="d-flex flex-column">
+      <span>No poster available</span>
+      <v-icon
+        x-large
+        class="ma-3">
+        mdi-emoticon-frown-outline
+      </v-icon>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -12,10 +27,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'MovieImage',
   props: {
-    imagePath: {
-      type: String,
+    movieDetails: {
+      type: Object,
       required: false,
-      default: ''
+      default: null
     },
     width: {
       type: [Number, String],
@@ -65,6 +80,9 @@ export default {
   },
   computed: {
     ...mapGetters('meta', ['secureBaseUrl', 'posterSizes']),
+    imagePath () {
+      return this.movieDetails === null ? null : this.movieDetails.posterPath
+    },
     imageUri () {
       const { secureBaseUrl, selectedSize, imagePath } = this
       return `${secureBaseUrl}${selectedSize}${imagePath}`
