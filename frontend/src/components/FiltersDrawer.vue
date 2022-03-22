@@ -47,11 +47,10 @@
                     class="py-0"
                     cols="6">
                     <v-checkbox
-                      v-model="selectedGenres"
                       dense
                       hide-details
                       :label="genre.name"
-                      :value="genre.id">
+                      @click="clickCheckbox('selectedGenres', genre.id)">>
                     </v-checkbox>
                   </v-col>
                 </v-row>
@@ -65,11 +64,10 @@
                     class="py-0"
                     cols="6">
                     <v-checkbox
-                      v-model="selectedDecades"
                       dense
                       hide-details
                       :label="decade.name"
-                      :value="decade.id">
+                      @click="clickCheckbox('selectedDecades', decade.id)">
                     </v-checkbox>
                   </v-col>
                 </v-row>
@@ -83,11 +81,10 @@
                     class="py-0"
                     cols="6">
                     <v-checkbox
-                      v-model="selectedCountries"
                       dense
                       hide-details
                       :label="country.name"
-                      :value="country.id">
+                      @click="clickCheckbox('selectedCountries', country.id)">
                     </v-checkbox>
                   </v-col>
                 </v-row>
@@ -101,11 +98,10 @@
                     class="py-0"
                     cols="6">
                     <v-checkbox
-                      v-model.lazy="selectedDirectors"
                       dense
                       hide-details
                       :label="director.name"
-                      :value="director.id">
+                      @click="clickCheckbox('selectedDirectors', director.id)">
                     </v-checkbox>
                   </v-col>
                 </v-row>
@@ -173,6 +169,14 @@ export default {
   },
   methods: {
     ...mapActions('filters', ['setFilters', 'setSelectedFilters']),
+    clickCheckbox (filterType, value) {
+      const index = this[filterType].findIndex(id => id === value)
+      if (index < 0) {
+        this[filterType].push(value)
+        return
+      }
+      this[filterType].splice(index, 1)
+    },
     close () {
       this.filterIsOpenLocal = false
     }
