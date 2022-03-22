@@ -35,7 +35,7 @@
               <v-divider vertical></v-divider>
               <v-col
                 cols="8"
-                class="pa-1">
+                class="pa-1 overflow-y-auto overflow-x-hidden filters-col">
                 <v-row>
                   <v-col cols="12">
                     <h3>Genres</h3>
@@ -212,5 +212,7 @@ export default {
 </script>
 
 <style scoped>
-
+.filters-col {
+  height: 750px;
+}
 </style>
