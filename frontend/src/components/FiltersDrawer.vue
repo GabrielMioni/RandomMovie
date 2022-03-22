@@ -1,5 +1,5 @@
 <template>
-  <v-theme-provider light>
+  <v-theme-provider dark>
     <v-navigation-drawer
       v-model="filterIsOpenLocal"
       width="50%"
@@ -55,6 +55,60 @@
                     </v-checkbox>
                   </v-col>
                 </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <h3>Decades</h3>
+                  </v-col>
+                  <v-col
+                    v-for="(decade, index) in decades"
+                    :key="`decade-filter-${index}`"
+                    class="py-0"
+                    cols="6">
+                    <v-checkbox
+                      v-model="selectedDecades"
+                      dense
+                      hide-details
+                      :label="decade.name"
+                      :value="decade.id">
+                    </v-checkbox>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <h3>Countries</h3>
+                  </v-col>
+                  <v-col
+                    v-for="(country, index) in countries"
+                    :key="`decade-filter-${index}`"
+                    class="py-0"
+                    cols="6">
+                    <v-checkbox
+                      v-model="selectedCountries"
+                      dense
+                      hide-details
+                      :label="country.name"
+                      :value="country.id">
+                    </v-checkbox>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <h3>Directors</h3>
+                  </v-col>
+                  <v-col
+                    v-for="(director, index) in directors"
+                    :key="`decade-filter-${index}`"
+                    class="py-0"
+                    cols="6">
+                    <v-checkbox
+                      v-model.lazy="selectedDirectors"
+                      dense
+                      hide-details
+                      :label="director.name"
+                      :value="director.id">
+                    </v-checkbox>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-container>
@@ -77,7 +131,10 @@ export default {
         'Countries',
         'Directors'
       ],
-      selectedGenres: []
+      selectedGenres: [],
+      selectedDecades: [],
+      selectedCountries: [],
+      selectedDirectors: []
     }
   },
   props: {
@@ -87,8 +144,21 @@ export default {
     }
   },
   mounted () {
-    console.log('look at me I am the filters guys')
     this.setFilters()
+  },
+  watch: {
+    selectedGenres (value) {
+      this.setSelectedFilters({ type: 'genres', ids: value })
+    },
+    selectedDecades (value) {
+      this.setSelectedFilters({ type: 'decades', ids: value })
+    },
+    selectedCountries (value) {
+      this.setSelectedFilters({ type: 'countries', ids: value })
+    },
+    selectedDirectors (value) {
+      this.setSelectedFilters({ type: 'directors', ids: value })
+    }
   },
   computed: {
     ...mapGetters('filters', ['genres', 'decades', 'countries', 'directors']),
@@ -102,7 +172,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('filters', ['setFilters']),
+    ...mapActions('filters', ['setFilters', 'setSelectedFilters']),
     close () {
       this.filterIsOpenLocal = false
     }
