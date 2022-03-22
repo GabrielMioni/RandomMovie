@@ -6,9 +6,21 @@ const directors = (state) => state.directors
 
 const genres = (state) => state.genres
 
+const selectedGenres = (state) => state.selectedGenres
+
+const selectedDecades = (state) => state.selectedDecades
+
+const selectedDirectors = (state) => state.selectedDirectors
+
+const selectedCountries = (state) => state.selectedCountries
+
 export default {
   countries,
   decades,
   directors,
-  genres
+  genres,
+  selectedGenres,
+  selectedDecades,
+  selectedDirectors,
+  selectedCountries
 }

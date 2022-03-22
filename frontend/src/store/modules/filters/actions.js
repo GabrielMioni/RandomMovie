@@ -7,6 +7,11 @@ const setFilters = ({ commit }) => {
   })
 }
 
+const setSelectedFilters = ({ commit }, payload) => {
+  commit('SET_SELECTED_FILTERS', payload)
+}
+
 export default {
-  setFilters
+  setFilters,
+  setSelectedFilters
 }

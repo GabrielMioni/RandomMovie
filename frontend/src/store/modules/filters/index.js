@@ -6,7 +6,11 @@ const state = {
   countries: [],
   decades: [],
   directors: [],
-  genres: []
+  genres: [],
+  selectedCountries: [],
+  selectedDecades: [],
+  selectedDirectors: [],
+  selectedGenres: []
 }
 
 export default {
