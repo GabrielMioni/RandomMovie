@@ -7,7 +7,6 @@
       temporary
       right>
       <v-card
-        height="100%"
         width="100%">
         <v-toolbar elevation="0">
           <v-spacer></v-spacer>
@@ -92,18 +91,26 @@
                   <v-col cols="12">
                     <h3>Directors</h3>
                   </v-col>
-                  <v-col
-                    v-for="(director, index) in directors"
-                    :key="`decade-filter-${index}`"
-                    class="py-0"
-                    cols="6">
-                    <v-checkbox
-                      dense
-                      hide-details
-                      :label="director.name"
-                      @click="clickCheckbox('selectedDirectors', director.id)">
-                    </v-checkbox>
-                  </v-col>
+                  <template
+                    v-for="(sortedDirectors, key) in directorsSorted">
+                    <v-col
+                      :key="`director-${key}`"
+                      cols="12">
+                      <h3>{{ key.toUpperCase()}}</h3>
+                    </v-col>
+                    <v-col
+                      v-for="(director, index) in sortedDirectors"
+                      :key="`decade-filter-${index}`"
+                      class="py-0"
+                      cols="6">
+                      <v-checkbox
+                        dense
+                        hide-details
+                        :label="displayDirectorName(director)"
+                        @click="clickCheckbox('selectedDirectors', director.id)">
+                      </v-checkbox>
+                    </v-col>
+                  </template>
                 </v-row>
               </v-col>
             </v-row>
@@ -158,6 +165,18 @@ export default {
   },
   computed: {
     ...mapGetters('filters', ['genres', 'decades', 'countries', 'directors']),
+    directorsSorted () {
+      const directorsSorted = {}
+      'abcdefghijklmnopqrstuvwxyz'.split('').map(letter => {
+        directorsSorted[letter] = this.directors.filter(d => d.lastName.substr(0, 1).toLowerCase() === letter)
+          .sort((a, b) => {
+            const aLastName = a.lastName
+            const bLastName = b.lastName
+            return (aLastName < bLastName) ? -1 : (aLastName > bLastName) ? 1 : 0
+          })
+      })
+      return directorsSorted
+    },
     filterIsOpenLocal: {
       get () {
         return this.filtersOpen
@@ -169,6 +188,14 @@ export default {
   },
   methods: {
     ...mapActions('filters', ['setFilters', 'setSelectedFilters']),
+    displayDirectorName (director) {
+      const { firstName, lastName } = director
+
+      if (firstName.trim().length > 0 && lastName.trim().length > 0) {
+        return `${lastName}, ${firstName}`
+      }
+      return director.name
+    },
     clickCheckbox (filterType, value) {
       const index = this[filterType].findIndex(id => id === value)
       if (index < 0) {
