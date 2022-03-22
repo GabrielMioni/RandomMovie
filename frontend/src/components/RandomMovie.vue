@@ -72,6 +72,7 @@
 <script>
 import MovieImage from '@/components/MovieImage'
 import { getRandomMovie } from '@/api/movies'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'RandomMovie',
@@ -93,6 +94,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('filters', ['selectedGenres', 'selectedDecades', 'selectedDirectors', 'selectedCountries']),
     directedBy () {
       const directedByString = this.movie.directors.map(director => director.name).join(', ')
       const lastIndexComma = directedByString.lastIndexOf(',')
@@ -111,7 +113,14 @@ export default {
   },
   methods: {
     clickGetMovie () {
-      getRandomMovie()
+      const params = {
+        genreIds: this.selectedGenres,
+        decadeIds: this.selectedDecades,
+        countryIds: this.selectedCountries,
+        directorIds: this.selectedDirectors
+      }
+
+      getRandomMovie(params)
         .then(response => {
           this.movieLoaded = true
           this.movie = response.data
