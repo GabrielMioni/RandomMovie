@@ -22,18 +22,36 @@
           <v-container class="fill-height align-content-start">
             <v-row class="fill-height">
               <v-col
-                class="filters-col-left"
+                class="filters-col-left d-flex flex-column"
                 cols="4">
-                <v-list>
-                  <v-list-item
-                    v-for="(filter, index) in filterTypes"
-                    :key="`filter-${index}`">
-                    <v-list-item-title
-                      @click="scrollToFilter(filter)">
-                      <div class="filters-col-left__type">{{ filter }}</div>
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
+                <v-row>
+                  <v-list>
+                    <v-list-item
+                      v-for="(filter, index) in filterTypes"
+                      :key="`filter-${index}`">
+                      <v-list-item-title
+                        @click="scrollToFilter(filter)">
+                        <div class="filters-col-left__type">{{ filter }}</div>
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-row>
+                <v-row>
+                  <v-col class="d-flex flex-column justify-end align-content-end">
+                    <div class="align-content-center justify-center">
+                      <v-btn
+                        class="mr-3"
+                        outlined
+                        @click="resetAllFilters">
+                        Reset
+                      </v-btn>
+                      <v-btn
+                        outlined>
+                        Apply
+                      </v-btn>
+                    </div>
+                  </v-col>
+                </v-row>
               </v-col>
               <v-divider vertical></v-divider>
               <v-col
@@ -52,6 +70,7 @@
                     class="py-0"
                     cols="6">
                     <v-checkbox
+                      :ref="`genres-checkbox-${genre.id}`"
                       dense
                       hide-details
                       :label="genre.name"
@@ -72,6 +91,7 @@
                     class="py-0"
                     cols="6">
                     <v-checkbox
+                      :ref="`decades-checkbox-${decade.id}`"
                       dense
                       hide-details
                       :label="decade.name"
@@ -92,6 +112,7 @@
                     class="py-0"
                     cols="6">
                     <v-checkbox
+                      :ref="`countries-checkbox-${country.id}`"
                       dense
                       hide-details
                       :label="country.name"
@@ -120,6 +141,7 @@
                       class="py-0"
                       cols="6">
                       <v-checkbox
+                        :ref="`directors-checkbox-${director.id}`"
                         dense
                         hide-details
                         :label="displayDirectorName(director)"
@@ -207,6 +229,45 @@ export default {
     scrollToFilter (type) {
       const targetFilter = this.$refs[type.toLowerCase()]
       targetFilter.scrollIntoView({ behavior: 'smooth' })
+    },
+    resetAllFilters () {
+      this.resetFiltersByType('genres')
+      this.resetFiltersByType('decades')
+      this.resetFiltersByType('countries')
+      this.resetFiltersByType('directors')
+
+      this.selectedGenres = []
+      this.selectedDecades = []
+      this.selectedCountries = []
+      this.selectedDirectors = []
+    },
+    resetFiltersByType (filterType) {
+      let targetFilterArray = null
+
+      switch (filterType) {
+        case 'genres':
+          targetFilterArray = this.selectedGenres
+          break
+        case 'decades':
+          targetFilterArray = this.selectedDecades
+          break
+        case 'countries':
+          targetFilterArray = this.selectedCountries
+          break
+        case 'directors':
+          targetFilterArray = this.selectedDirectors
+          break
+      }
+
+      if (targetFilterArray === null) {
+        console.error('Bad filter type during reset')
+        return
+      }
+
+      targetFilterArray.map(id => {
+        const target = this.$refs[`${filterType}-checkbox-${id}`][0]
+        target.reset()
+      })
     },
     displayDirectorName (director) {
       const { firstName, lastName } = director
