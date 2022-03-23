@@ -21,13 +21,16 @@
         <v-card-text class="fill-height">
           <v-container class="fill-height align-content-start">
             <v-row class="fill-height">
-              <v-col cols="4">
+              <v-col
+                class="filters-col-left"
+                cols="4">
                 <v-list>
                   <v-list-item
                     v-for="(filter, index) in filterTypes"
                     :key="`filter-${index}`">
-                    <v-list-item-title>
-                      {{ filter }}
+                    <v-list-item-title
+                      @click="scrollToFilter(filter)">
+                      <div class="filters-col-left__type">{{ filter }}</div>
                     </v-list-item-title>
                   </v-list-item>
                 </v-list>
@@ -35,14 +38,17 @@
               <v-divider vertical></v-divider>
               <v-col
                 cols="8"
-                class="pa-1 overflow-y-auto overflow-x-hidden filters-col">
+                class="pa-1 overflow-y-auto overflow-x-hidden filters-col-right">
                 <v-row>
                   <v-col cols="12">
-                    <h3>Genres</h3>
+                    <h3
+                      ref="genres">
+                      Genres
+                    </h3>
                   </v-col>
                   <v-col
-                    v-for="(genre, index) in genres"
-                    :key="`genre-filter-${index}`"
+                    v-for="genre in genres"
+                    :key="`genre-filter-${genre.id}`"
                     class="py-0"
                     cols="6">
                     <v-checkbox
@@ -55,11 +61,14 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12">
-                    <h3>Decades</h3>
+                    <h3
+                      ref="decades">
+                      Decades
+                    </h3>
                   </v-col>
                   <v-col
-                    v-for="(decade, index) in decades"
-                    :key="`decade-filter-${index}`"
+                    v-for="decade in decades"
+                    :key="`decade-filter-${decade.id}`"
                     class="py-0"
                     cols="6">
                     <v-checkbox
@@ -72,11 +81,14 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12">
-                    <h3>Countries</h3>
+                    <h3
+                      ref="countries">
+                      Countries
+                    </h3>
                   </v-col>
                   <v-col
-                    v-for="(country, index) in countries"
-                    :key="`decade-filter-${index}`"
+                    v-for="country in countries"
+                    :key="`country-filter-${country.id}`"
                     class="py-0"
                     cols="6">
                     <v-checkbox
@@ -89,7 +101,11 @@
                 </v-row>
                 <v-row>
                   <v-col cols="12">
-                    <h3>Directors</h3>
+                    <h3
+                      ref="directors">
+                      Directors
+                    </h3>
+                    <a id="#directors"></a>
                   </v-col>
                   <template
                     v-for="(sortedDirectors, key) in directorsSorted">
@@ -99,8 +115,8 @@
                       <h3>{{ key.toUpperCase()}}</h3>
                     </v-col>
                     <v-col
-                      v-for="(director, index) in sortedDirectors"
-                      :key="`decade-filter-${index}`"
+                      v-for="director in sortedDirectors"
+                      :key="`director-filter-${director.id}`"
                       class="py-0"
                       cols="6">
                       <v-checkbox
@@ -188,6 +204,10 @@ export default {
   },
   methods: {
     ...mapActions('filters', ['setFilters', 'setSelectedFilters']),
+    scrollToFilter (type) {
+      const targetFilter = this.$refs[type.toLowerCase()]
+      targetFilter.scrollIntoView({ behavior: 'smooth' })
+    },
     displayDirectorName (director) {
       const { firstName, lastName } = director
 
@@ -211,8 +231,13 @@ export default {
 }
 </script>
 
-<style scoped>
-.filters-col {
+<style lang="scss" scoped>
+.filters-col-right {
   height: 750px;
+}
+.filters-col-left {
+  &__type {
+    cursor: pointer;
+  }
 }
 </style>
