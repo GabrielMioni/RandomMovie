@@ -102,6 +102,11 @@ export default {
       initialized: false
     }
   },
+  mounted () {
+    this.$root.$on('applyFilters', () => {
+      this.clickGetMovie()
+    })
+  },
   computed: {
     ...mapGetters('filters', ['selectedGenres', 'selectedDecades', 'selectedDirectors', 'selectedCountries']),
     directedBy () {

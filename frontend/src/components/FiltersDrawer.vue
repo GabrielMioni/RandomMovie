@@ -46,7 +46,8 @@
                         Reset
                       </v-btn>
                       <v-btn
-                        outlined>
+                        outlined
+                        @click="applyFilters">
                         Apply
                       </v-btn>
                     </div>
@@ -226,6 +227,10 @@ export default {
   },
   methods: {
     ...mapActions('filters', ['setFilters', 'setSelectedFilters']),
+    applyFilters () {
+      this.filterIsOpenLocal = false
+      this.$root.$emit('applyFilters')
+    },
     scrollToFilter (type) {
       const targetFilter = this.$refs[type.toLowerCase()]
       targetFilter.scrollIntoView({ behavior: 'smooth' })
