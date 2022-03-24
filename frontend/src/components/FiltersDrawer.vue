@@ -10,7 +10,7 @@
       <v-container class="fill-height align-content-start">
         <v-row>
           <v-spacer></v-spacer>
-          <v-col>
+          <v-col cols="2">
             <v-btn
               depressed
               fab
@@ -184,6 +184,9 @@ export default {
   },
   mounted () {
     this.setFilters()
+    this.$root.$on('openFilters', () => {
+      this.filterIsOpenLocal = true
+    })
   },
   watch: {
     selectedGenres (value) {
