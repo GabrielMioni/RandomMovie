@@ -275,9 +275,10 @@ export default {
       })
     },
     displayDirectorName (director) {
-      const { firstName, lastName } = director
+      const firstName = director.firstName.trim()
+      const lastName = director.lastName.trim()
 
-      if (firstName.trim().length > 0 && lastName.trim().length > 0) {
+      if ((firstName.length > 0 && lastName.length > 0) && firstName !== lastName) {
         return `${lastName}, ${firstName}`
       }
       return director.name
