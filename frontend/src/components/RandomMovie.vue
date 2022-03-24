@@ -9,6 +9,19 @@
           min-height="800px">
           <v-card-text class="fill-height">
             <v-container fill-height fluid>
+              <v-row>
+                <v-spacer></v-spacer>
+                <v-col cols="2">
+                  <v-btn
+                    tile
+                    outlined>
+                    <v-icon>
+                      mdi-plus
+                    </v-icon>
+                    Filters
+                  </v-btn>
+                </v-col>
+              </v-row>
               <v-row class="fill-height">
                 <v-col
                   v-if="movieLoading"
@@ -51,7 +64,6 @@
                   </v-col>
                 </template>
                 <template v-else>
-                  <v-spacer></v-spacer>
                   <v-col
                     cols="12"
                     v-ripple
