@@ -129,7 +129,11 @@ export default {
     originalLanguage () {
       if (this.movie.meta !== null) {
         const language = new Intl.DisplayNames(['en'], { type: 'language' })
-        return language.of(this.movie.meta.originalLanguage)
+        const languageOf = language.of(this.movie.meta.originalLanguage)
+        if (languageOf === 'xx') {
+          return 'Silent'
+        }
+        return languageOf
       }
       return ''
     }
