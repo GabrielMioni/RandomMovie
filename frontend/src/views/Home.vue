@@ -1,8 +1,5 @@
 <template>
   <div>
-    <v-btn @click="toggleFilters(true)">
-      Filters
-    </v-btn>
     <random-movie></random-movie>
     <filters-drawer
       :filters-open="filtersOpen"
