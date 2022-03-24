@@ -9,19 +9,16 @@
           min-height="800px">
           <v-card-text class="fill-height">
             <v-container fill-height fluid>
-              <v-row>
-                <v-spacer></v-spacer>
-                <v-col cols="2">
-                  <v-btn
-                    tile
-                    outlined>
-                    <v-icon>
-                      mdi-plus
-                    </v-icon>
-                    Filters
-                  </v-btn>
-                </v-col>
-              </v-row>
+              <v-btn
+                tile
+                outlined
+                class="filters-button"
+                @click="openFilters">
+                <v-icon>
+                  mdi-plus
+                </v-icon>
+                Filters
+              </v-btn>
               <v-row class="fill-height">
                 <v-col
                   v-if="movieLoading"
@@ -138,6 +135,9 @@ export default {
     }
   },
   methods: {
+    openFilters () {
+      this.$root.$emit('openFilters')
+    },
     clickGetMovie () {
       const params = {
         genreIds: this.selectedGenres,
@@ -168,5 +168,9 @@ export default {
 .random-movie {
   min-height: 80%;
 }
-
+.filters-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
 </style>
