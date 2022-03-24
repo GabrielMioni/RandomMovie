@@ -37,7 +37,7 @@ namespace backend.Services
         public object GetAllFiltersData()
         {
             var countries = _context.Countries.ToList();
-            var decades = _context.Decades.ToList();
+            var decades = _context.Decades.Where(d => d.Name != "0000s").ToList();
             var directors = _context.Directors.Select(d => _mapper.Map<DirectorDto>(d)).ToList(); 
             var genres = _context.Genres.Select(g => _mapper.Map<GenreDto>(g)).ToList();
 
