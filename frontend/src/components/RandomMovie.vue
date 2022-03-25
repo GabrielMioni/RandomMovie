@@ -1,12 +1,12 @@
 <template>
-  <v-container>
-    <v-row>
+  <v-container class="random-movie">
+    <v-row justify="center">
       <v-col
-        :cols="12"
-        class="d-flex justify-center">
+        md="10"
+        sm="12">
         <v-card
-          width="80%"
-          min-height="800px">
+          class="overflow-y-auto"
+          height="800px">
           <v-card-text class="fill-height">
             <v-container fill-height fluid>
               <v-btn
@@ -30,13 +30,19 @@
                 </v-col>
                 <template
                   v-else-if="initialized">
-                  <v-col>
+                  <v-col
+                    md="6"
+                    sm="12"
+                    class="fill-height">
                     <movie-image
                       :movie-details="movie.meta"
-                      lg>
+                      xxl>
                     </movie-image>
                   </v-col>
-                  <v-col>
+                  <v-col
+                    md="6"
+                    sm="12"
+                    class="fill-height">
                     <v-row class="d-flex fill-height flex-column">
                       <v-col
                         cols="11"
@@ -169,9 +175,6 @@ export default {
 </script>
 
 <style scoped>
-.random-movie {
-  min-height: 80%;
-}
 .filters-button {
   position: absolute;
   top: 1rem;
