@@ -4,9 +4,8 @@
       v-if="imagePath"
       :alt="alt"
       :src="imageUri"
-      :width="width"
-      contain
-      max-height="650px">
+      height="100%"
+      contain>
     </v-img>
     <div
       v-else
