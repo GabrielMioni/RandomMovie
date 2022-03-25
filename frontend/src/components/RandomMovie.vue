@@ -51,7 +51,8 @@
                           <h1 class="pb-3">{{ movie.title }}</h1>
                           <p>
                             Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
-                            {{ originalLanguage }}
+                            {{ originalLanguage }} <br>
+                            {{ genresDisplay }}
                           </p>
                           <p>{{ movie.meta ? movie.meta.overview : '' }}</p>
                         </div>
@@ -131,6 +132,9 @@ export default {
         return directedByString
       }
       return `${directedByString.substring(0, lastIndexComma)} and ${directedByString.substring(lastIndexComma + 1)}`
+    },
+    genresDisplay () {
+      return this.movie.genres.map(g => g.name).join(' • ')
     },
     originalLanguage () {
       if (this.movie.meta !== null) {
