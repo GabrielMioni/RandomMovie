@@ -25,16 +25,18 @@
             class="filters-col-left d-flex flex-column"
             cols="4">
             <v-row>
-              <v-list>
-                <v-list-item
-                  v-for="(filter, index) in filterTypes"
-                  :key="`filter-${index}`">
-                  <v-list-item-title
-                    @click="scrollToFilter(filter)">
-                    <div class="filters-col-left__type">{{ filter }}</div>
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list>
+              <v-col>
+                <v-list>
+                  <v-list-item
+                    v-for="(filter, index) in filterTypes"
+                    :key="`filter-${index}`">
+                    <v-list-item-title
+                      @click="scrollToFilter(filter)">
+                      <div class="filters-col-left__type">{{ filter }}</div>
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-col>
             </v-row>
             <v-row>
               <v-col class="d-flex flex-column justify-end align-content-end">
