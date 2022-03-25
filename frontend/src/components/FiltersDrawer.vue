@@ -2,8 +2,8 @@
   <v-theme-provider dark>
     <v-navigation-drawer
       v-model="filterIsOpenLocal"
-      width="50%"
-      height="100vh"
+      :width="$vuetify.breakpoint.smAndDown ? '100%' : '50%'"
+      height="100%"
       absolute
       temporary
       right>
@@ -300,7 +300,7 @@ export default {
 
 <style lang="scss" scoped>
 .filters-col-right {
-  height: 90vh;
+  height: 750px;
 }
 .filters-col-left {
   &__type {
