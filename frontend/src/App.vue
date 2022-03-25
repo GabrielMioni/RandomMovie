@@ -1,7 +1,15 @@
 <template>
   <v-app>
     <v-main>
-      <router-view/>
+      <v-app-bar elevation="4">
+      </v-app-bar>
+      <v-content
+        fluid
+        class="fill-height">
+        <router-view
+          class="main">
+        </router-view>
+      </v-content>
     </v-main>
   </v-app>
 </template>
@@ -25,3 +33,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.main {
+  height: 100%;
+}
+</style>
