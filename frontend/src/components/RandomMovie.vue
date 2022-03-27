@@ -42,28 +42,47 @@
                   <v-col
                     md="6"
                     sm="12"
-                    class="fill-height">
-                    <v-row class="d-flex fill-height flex-column">
+                    class="mt-8">
+                    <v-row>
+                      <v-tabs
+                        v-model="tab"
+                        color="white">
+                        <v-tabs-slider color="yellow accent-4"></v-tabs-slider>
+                        <v-tab>Film</v-tab>
+                        <v-tab>Cast</v-tab>
+                      </v-tabs>
+                    </v-row>
+                    <v-row class="movie-information mt-8">
                       <v-col
-                        cols="11"
-                        class="d-flex align-center">
-                        <div>
-                          <h1 class="pb-3">{{ movie.title }}</h1>
-                          <p>
-                            Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
-                            {{ originalLanguage }} <br>
-                            {{ genresDisplay }}
-                          </p>
-                          <p>{{ movie.meta ? movie.meta.overview : '' }}</p>
-                        </div>
+                        class="pl-0 pt-4"
+                        cols="11">
+                        <v-tabs-items
+                          v-model="tab">
+                          <v-tab-item
+                            transition="none">
+                            <div>
+                              <h1 class="pb-3">{{ movie.title }}</h1>
+                              <p>
+                                Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
+                                {{ originalLanguage }} <br>
+                                {{ genresDisplay }}
+                              </p>
+                              <p>{{ movie.meta ? movie.meta.overview : '' }}</p>
+                            </div>
+                          </v-tab-item>
+                          <v-tab-item
+                            transition="none">
+                            Hello.
+                          </v-tab-item>
+                        </v-tabs-items>
                       </v-col>
-                      <v-col class="d-flex flex-column justify-end pa-0">
-                        <v-btn
-                          @click="clickGetMovie"
-                          width="100%">
-                          Find another movie
-                        </v-btn>
-                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-btn
+                        @click="clickGetMovie"
+                        width="100%">
+                        Find another movie
+                      </v-btn>
                     </v-row>
                   </v-col>
                 </template>
@@ -115,7 +134,8 @@ export default {
         year: 0
       },
       movieLoading: false,
-      initialized: false
+      initialized: false,
+      tab: 0
     }
   },
   mounted () {
@@ -183,5 +203,8 @@ export default {
   position: absolute;
   top: 1rem;
   right: 1rem;
+}
+.movie-information {
+  height: 600px;
 }
 </style>
