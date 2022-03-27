@@ -56,25 +56,73 @@
                       <v-col
                         class="pl-0 pt-4"
                         cols="11">
-                        <v-tabs-items
-                          v-model="tab">
-                          <v-tab-item
-                            transition="none">
-                            <div>
-                              <h1 class="pb-3">{{ movie.title }}</h1>
-                              <p>
-                                Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
-                                {{ originalLanguage }} <br>
-                                {{ genresDisplay }}
-                              </p>
-                              <p>{{ movie.meta ? movie.meta.overview : '' }}</p>
-                            </div>
-                          </v-tab-item>
-                          <v-tab-item
-                            transition="none">
-                            Hello.
-                          </v-tab-item>
-                        </v-tabs-items>
+                        <keep-alive>
+                          <v-tabs-items
+                            v-model="tab">
+                            <v-tab-item
+                              transition="none">
+                              <div>
+                                <h1 class="pb-3">{{ movie.title }}</h1>
+                                <p>
+                                  Directed by {{ directedBy }} • {{ movie.year }} • {{ movie.country.name }} <br>
+                                  {{ originalLanguage }} <br>
+                                  {{ genresDisplay }}
+                                </p>
+                                <p>{{ movie.meta ? movie.meta.overview : '' }}</p>
+                              </div>
+                            </v-tab-item>
+                            <v-tab-item transition="none">
+                              <v-row class="d-flex">
+                                <v-col
+                                  class="cast-member d-flex"
+                                  cols="6"
+                                  v-for="index in 2"
+                                  :key="index">
+                                  <v-avatar size="80">
+                                    <v-img
+                                      alt="test"
+                                      lazy-src="https://image.tmdb.org/t/p/w45/aUFBsGCN6qpcjsF14LccMzE5ye7.jpg"
+                                      src="https://image.tmdb.org/t/p/w342/aUFBsGCN6qpcjsF14LccMzE5ye7.jpg">
+                                    </v-img>
+                                  </v-avatar>
+                                  <div class="ma-3">
+                                    <h4>
+                                      Max von sydow
+                                    </h4>
+                                    as Albert Emanuel Vogler
+                                  </div>
+                                </v-col>
+                                <v-col
+                                  cols="12"
+                                  class="d-flex flex-column">
+                                  <h3>Cast</h3>
+                                  <span class="cast-divider yellow accent-4 mt-3"></span>
+                                </v-col>
+                                <v-col
+                                  class="cast-member d-flex"
+                                  cols="6"
+                                  v-for="index in 6"
+                                  :key="index">
+                                  <v-avatar
+                                    color="primary"
+                                    size="80">
+                                    <v-img
+                                      alt="test"
+                                      lazy-src="https://image.tmdb.org/t/p/w45/aUFBsGCN6qpcjsF14LccMzE5ye7.jpg"
+                                      src="https://image.tmdb.org/t/p/w342/aUFBsGCN6qpcjsF14LccMzE5ye7.jpg">
+                                    </v-img>
+                                  </v-avatar>
+                                  <div class="ma-3">
+                                    <h4>
+                                      Max von sydow
+                                    </h4>
+                                    as Albert Emanuel Vogler
+                                  </div>
+                                </v-col>
+                              </v-row>
+                            </v-tab-item>
+                          </v-tabs-items>
+                        </keep-alive>
                       </v-col>
                     </v-row>
                     <v-row>
@@ -198,7 +246,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .filters-button {
   position: absolute;
   top: 1rem;
@@ -206,5 +254,11 @@ export default {
 }
 .movie-information {
   height: 600px;
+}
+.cast-member {
+  height: 106px;
+}
+.cast-divider {
+  height: 2px;
 }
 </style>
