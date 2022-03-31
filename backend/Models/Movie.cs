@@ -13,6 +13,7 @@ namespace backend.Models
         public int Year { get; set; }
         public List<Movie_Director> Movie_Directors { get; set; }
         public List<Movie_Genre> Movie_Genres { get; set; }
+        public List <Movie_Person> Movie_Person { get; set; }
         public MovieMeta Meta { get; set; }
     }
 }
