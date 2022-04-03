@@ -59,5 +59,13 @@ namespace backend.Controllers
             var results = _metaDataService.GetConfigurationData();
             return Ok(results);
         }
+
+        [HttpPost]
+        [Route("CollectCredits")]
+        public async Task<IActionResult> CollectCreditsAsync()
+        {
+            await _metaDataService.CollectMoviePersonsByApiIdAsync();
+            return Ok();
+        }
     }
 }
