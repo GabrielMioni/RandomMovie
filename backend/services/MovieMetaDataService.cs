@@ -174,6 +174,77 @@ namespace backend.Services
             return directorDtoList;
         }
 
+        public async Task CollectMoviePersonsByApiIdAsync()
+        {
+            await _context.TruncateTable("Movie_Persons");
+            await _context.TruncateTable("Persons");
+
+            var metas = _context.MovieMetas.ToList();
+
+            var creditsList = new List<Credits>();
+            var moviePersonList = new List<Person>();
+
+            foreach (var meta in metas)
+            {
+                var movieApiId = meta.ApiId;
+
+                var credits = GetMovieCreditsByApiId(movieApiId);
+                creditsList.Add(credits);
+
+                var actors = credits.cast
+                    .Where(c => c.known_for_department == "Acting")
+                    .Take(6);
+
+                var directors = credits.crew
+                    .Where(d => d.known_for_department == "Directing");
+
+                var allMovieCredits = actors.Concat(directors);
+
+                //var persons = allMovieCredits.Select(creditPerson => _mapper.Map<Person>(creditPerson));
+
+                //moviePersonList.AddRange(persons);
+
+                foreach (var creditPerson in allMovieCredits)
+                {
+                    var personFromDb = _context.Persons.FirstOrDefault(p => p.ApiId == creditPerson.id);
+
+                    if (personFromDb != null)
+                    {
+                        continue;
+                    }
+
+                    var person = _mapper.Map<Person>(creditPerson);
+
+                    var details = GetPersonDetailsByPersonApiId(person.ApiId);
+                    if (details != null)
+                    {
+                        person.Biography = FormatPersonBiography(details.biography);
+                        person.Birthday = details.birthday;
+                        person.Deathday = details.deathday;
+                    }
+
+                    _context.Persons.Add(person);
+                    _context.SaveChanges();
+
+                    var moviePerson = new Movie_Person
+                    {
+                        PersonId = person.Id,
+                        MovieId = meta.MovieId
+                    };
+                    _context.Movie_Persons.Add(moviePerson);
+                };
+            }
+
+            // return moviePersonList;
+        }
+
+        private string FormatPersonBiography (string biography)
+        {
+            var biographyParts = biography.Split("\n\n");
+            var noWikipedia = biographyParts.Where(part => !part.ToLower().Contains("wikipedia"));
+            return String.Join("\n\n", noWikipedia);
+        }
+
         public async Task<List<MovieSearchResult>> CollectMoviesByDirectorAsync()
         {
             await _context.TruncateTable("MovieMetas");
@@ -420,6 +491,14 @@ namespace backend.Services
             var directorFilmography = JsonSerializer.Deserialize<PersonFilmography>(response);
 
             return directorFilmography;
+        }
+
+        public PersonDetails GetPersonDetailsByPersonApiId(int personId)
+        {
+            var url = $"person/{personId}";
+            var response = GetResponseFromMovieApi(url, null);
+            var personDetailsResponse = JsonSerializer.Deserialize<PersonDetails>(response);
+            return personDetailsResponse;
         }
 
         public MovieSearch SearchMovieByTitle (string title, int page = 0)
