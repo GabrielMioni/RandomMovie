@@ -13,7 +13,8 @@ namespace backend.MappingProfiles
         {
             CreateMap<Movie, MovieDto>()
                 .ForMember(dest => dest.Directors, opt => opt.MapFrom(src => src.Movie_Directors.Select(md => md.Director)))
-                .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Movie_Genres.Select(mg => mg.Genre)));
+                .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Movie_Genres.Select(mg => mg.Genre)))
+                .ForMember(dest => dest.Credits, opt => opt.MapFrom(src => src.Movie_Person.Select(mg => mg.Person)));
             CreateMap<MovieDto, Movie>();
 
             CreateMap<Director, DirectorDto>();
@@ -35,6 +36,16 @@ namespace backend.MappingProfiles
                 .ForMember(dest => dest.PosterPath, opt => opt.MapFrom(src => src.poster_path))
                 .ForMember(dest => dest.ReleasedDate, opt => opt.MapFrom(src => src.release_date))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.title));
+
+            CreateMap<CreditPerson, Person>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.ApiId, opt => opt.MapFrom(src => src.id))
+                .ForMember(dest => dest.OriginalName, opt => opt.MapFrom(src => src.original_name))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.name))
+                .ForMember(dest => dest.KnownFor, opt => opt.MapFrom(src => src.known_for_department))
+                .ForMember(dest => dest.ProfilePath, opt => opt.MapFrom(src => src.profile_path));
+
+            CreateMap<Person, PersonDto>();            
         }
     }
 }
