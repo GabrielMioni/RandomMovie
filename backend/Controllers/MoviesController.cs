@@ -32,5 +32,13 @@ namespace backend.Controllers
             var movie = _movieService.GetRandomMovieDto(request);
             return Ok(movie);
         }
+
+        [HttpPost]
+        [Route("GetSpecificMovie")]
+        public IActionResult GetSpecificMovie([FromBody] RandomMovieRequest request = null)
+        {
+            var movie = _movieService.GetSpecificMovie();
+            return Ok(movie);
+        }
     }
 }
