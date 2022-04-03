@@ -8,6 +8,9 @@ namespace backend.Models
         public int ApiId { get; set; }
         public string Name { get; set; }
         public string OriginalName { get; set; }
+        public string Biography { get; set; }
+        public string Birthday { get; set; }
+        public string Deathday { get; set; }
         public string KnownFor { get; set; }
         public string ProfilePath { get; set; }
         public List<Movie_Person> Movie_Persons { get; set; }
