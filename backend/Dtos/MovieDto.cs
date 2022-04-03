@@ -13,5 +13,6 @@ namespace backend.Dtos
         public int Year { get; set; }
         public List<DirectorDto> Directors { get; set; }
         public List<GenreDto> Genres { get; set; }
+        public List<PersonDto> Credits { get; set; }
     }
 }
