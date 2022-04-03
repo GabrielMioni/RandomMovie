@@ -27,6 +27,28 @@ namespace backend.Services
             _mapper = mapper;
         }
 
+        public MovieDto GetSpecificMovie()
+        {
+            var movie = _context.Movies
+                .Include(m => m.Country)
+                .Include(m => m.Decade)
+                .Include(m => m.Meta)
+                .Include(m => m.Movie_Directors)
+                .ThenInclude(md => md.Director)
+                .Include(m => m.Movie_Genres)
+                .ThenInclude(mg => mg.Genre)
+                .Include(m => m.Movie_Person)
+                .ThenInclude(md => md.Person)
+                .FirstOrDefault(m => m.Id == 2580);
+
+            if (movie == null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<MovieDto>(movie);
+        }
+
         public MovieDto GetRandomMovieDto(RandomMovieRequest req = null)
         {
             var random = new Random();
