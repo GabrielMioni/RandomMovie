@@ -46,7 +46,19 @@ namespace backend.Services
                 return null;
             }
 
-            return _mapper.Map<MovieDto>(movie);
+            var movieDto = _mapper.Map<MovieDto>(movie);
+
+            foreach (var person in movie.Movie_Person)
+            {
+                var personId = person.PersonId;
+                var index = movieDto.Credits.FindIndex(c => c.Id == personId);
+                if (index > -1)
+                {
+                    movieDto.Credits[index].Character = person.Character;
+                }
+            }
+
+            return movieDto;
         }
 
         public MovieDto GetRandomMovieDto(RandomMovieRequest req = null)
@@ -59,10 +71,22 @@ namespace backend.Services
             if (moviesCount <= 0)
                 return null;
 
-            var index = random.Next(0, moviesCount);
-            var movie = movies[index];
+            var randomIndex = random.Next(0, moviesCount);
+            var movie = movies[randomIndex];
 
-            return _mapper.Map<MovieDto>(movie);
+            var movieDto = _mapper.Map<MovieDto>(movie);
+
+            foreach (var person in movie.Movie_Person)
+            {
+                var personId = person.PersonId;
+                var index = movieDto.Credits.FindIndex(c => c.Id == personId);
+                if (index > -1)
+                {
+                    movieDto.Credits[index].Character = person.Character;
+                }
+            }
+
+            return movieDto;
         }
 
         public List<Movie> GetMoviesByRequestData(RandomMovieRequest req = null)
@@ -75,6 +99,8 @@ namespace backend.Services
                 .ThenInclude(md => md.Director)
                 .Include(m => m.Movie_Genres)
                 .ThenInclude(mg => mg.Genre)
+                .Include(m => m.Movie_Person)
+                .ThenInclude(md => md.Person)
                 .AsQueryable();
 
             var countryIds = req.CountryIds ?? new List<int>();
