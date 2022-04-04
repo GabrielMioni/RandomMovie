@@ -3,6 +3,7 @@
     public class CreditPerson
     {
         public int id { get; set; }
+        public string character { get; set; }
         public string known_for_department { get; set; }
         public string name { get; set; }
         public string original_name { get; set; }
