@@ -73,6 +73,12 @@
                             </v-tab-item>
                             <v-tab-item transition="none">
                               <v-row class="d-flex">
+                                <v-col
+                                  cols="12"
+                                  class="d-flex flex-column">
+                                  <h3>Directed by</h3>
+                                  <span class="cast-divider yellow accent-4 mt-3"></span>
+                                </v-col>
                                 <template v-for="index in 2">
                                   <v-col
                                     class="cast-member d-flex"
