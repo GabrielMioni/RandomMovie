@@ -11,5 +11,6 @@
         public string Deathday { get; set; }
         public string KnownFor { get; set; }
         public string ProfilePath { get; set; }
+        public string Character { get; set; }
     }
 }
