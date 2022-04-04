@@ -72,74 +72,9 @@
                               </div>
                             </v-tab-item>
                             <v-tab-item transition="none">
-                              <v-row class="d-flex">
-                                <v-col
-                                  cols="12"
-                                  class="d-flex flex-column">
-                                  <h3>Directed by</h3>
-                                  <span class="cast-divider yellow accent-4 mt-3"></span>
-                                </v-col>
-                                <template v-for="index in 2">
-                                  <v-col
-                                    class="cast-member d-flex"
-                                    cols="6"
-                                    :key="index">
-                                    <v-tooltip
-                                      bottom
-                                      max-width="500px"
-                                      color="black"
-                                      nudge-right="150px">
-                                      <template v-slot:activator="{ on, attrs }">
-                                        <v-avatar size="80">
-                                          <v-img
-                                            alt="test"
-                                            lazy-src="https://image.tmdb.org/t/p/w45/aUFBsGCN6qpcjsF14LccMzE5ye7.jpg"
-                                            src="https://image.tmdb.org/t/p/w342/aUFBsGCN6qpcjsF14LccMzE5ye7.jpg"
-                                            v-bind="attrs"
-                                            v-on="on">
-                                          </v-img>
-                                        </v-avatar>
-                                      </template>
-                                      <span style="max-width: 500px">
-                                        <p v-html="`Max von Sydow (10 April 1929 – 8 March 2020) was a Swedish actor. He also held French citizenship since 2002. He starred in many films and had supporting roles in dozens more. He performed in films filmed in many languages, including Swedish, Norwegian, English, Italian, German, Danish, French and Spanish.<br><br>Some of his most memorable film roles include knight Antonius Block in Ingmar Bergman's The Seventh Seal (the first of his eleven films with Bergman and the film that includes the iconic shot of his career in the scene where he plays chess with Death), Jesus in George Stevens's The Greatest Story Ever Told, Father Merrin in Friedkin's The Exorcist, Joubert the assassin in Three Days of the Condor, and Ming the Merciless in the 1980 version of Flash Gordon.<br><br>He was twice nominated for the Academy Award - Best Leading Actor for Pelle the Conqueror (1988) and Best Supporting Actor for Extremely Loud and Incredibly Close (2011).`"></p>
-                                      </span>
-                                    </v-tooltip>
-                                    <div class="ma-3">
-                                      <h4>
-                                        Max von sydow
-                                      </h4>
-                                      as Albert Emanuel Vogler
-                                    </div>
-                                  </v-col>
-                                </template>
-                                <v-col
-                                  cols="12"
-                                  class="d-flex flex-column">
-                                  <h3>Cast</h3>
-                                  <span class="cast-divider yellow accent-4 mt-3"></span>
-                                </v-col>
-                                <v-col
-                                  class="cast-member d-flex"
-                                  cols="6"
-                                  v-for="index in 6"
-                                  :key="index">
-                                  <v-avatar
-                                    color="primary"
-                                    size="80">
-                                    <v-img
-                                      alt="test"
-                                      lazy-src="https://image.tmdb.org/t/p/w45/aUFBsGCN6qpcjsF14LccMzE5ye7.jpg"
-                                      src="https://image.tmdb.org/t/p/w342/aUFBsGCN6qpcjsF14LccMzE5ye7.jpg">
-                                    </v-img>
-                                  </v-avatar>
-                                  <div class="ma-3">
-                                    <h4>
-                                      Max von sydow
-                                    </h4>
-                                    as Albert Emanuel Vogler
-                                  </div>
-                                </v-col>
-                              </v-row>
+                              <cast-and-crew-info
+                                :movie="movie">
+                              </cast-and-crew-info>
                             </v-tab-item>
                           </v-tabs-items>
                         </keep-alive>
@@ -182,13 +117,15 @@
 
 <script>
 import MovieImage from '@/components/MovieImage'
+import CastAndCrewInfo from '@/components/RandomMovie/CastAndCrewInfo'
 import { getRandomMovie } from '@/api/movies'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'RandomMovie',
   components: {
-    MovieImage
+    MovieImage,
+    CastAndCrewInfo
   },
   data () {
     return {

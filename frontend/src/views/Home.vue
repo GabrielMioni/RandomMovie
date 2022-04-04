@@ -10,7 +10,7 @@
 
 <script>
 // import HelloWorld from '../components/HelloWorld'
-import RandomMovie from '../components/RandomMovie.vue'
+import RandomMovie from '@/components/RandomMovie/RandomMovie.vue'
 import FiltersDrawer from '@/components/FiltersDrawer'
 
 export default {
