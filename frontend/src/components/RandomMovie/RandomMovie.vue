@@ -178,6 +178,7 @@ export default {
       this.$root.$emit('openFilters')
     },
     clickGetMovie () {
+      this.tab = 0
       const params = {
         genreIds: this.selectedGenres,
         decadeIds: this.selectedDecades,
