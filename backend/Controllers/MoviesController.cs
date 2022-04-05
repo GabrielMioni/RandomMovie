@@ -33,11 +33,16 @@ namespace backend.Controllers
             return Ok(movie);
         }
 
-        [HttpPost]
-        [Route("GetSpecificMovie")]
-        public IActionResult GetSpecificMovie([FromBody] RandomMovieRequest request = null)
+        [HttpGet]
+        [Route("/api/Movies/{movieId}")]
+        public IActionResult GetSpecificMovie(int movieId)
         {
-            var movie = _movieService.GetSpecificMovie();
+            if (movieId <= 0)
+            {
+                return BadRequest("movieId is invalid");
+            }
+
+            var movie = _movieService.GetMovieById(movieId);
             return Ok(movie);
         }
     }
