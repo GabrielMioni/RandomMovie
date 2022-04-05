@@ -118,7 +118,7 @@
 <script>
 import MovieImage from '@/components/MovieImage'
 import CastAndCrewInfo from '@/components/RandomMovie/CastAndCrewInfo'
-import { getRandomMovie } from '@/api/movies'
+import { getRandomMovie, getMovieById } from '@/api/movies'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -126,6 +126,12 @@ export default {
   components: {
     MovieImage,
     CastAndCrewInfo
+  },
+  props: {
+    movieId: {
+      required: false,
+      default: null
+    }
   },
   data () {
     return {
@@ -144,6 +150,9 @@ export default {
     }
   },
   mounted () {
+    if (this.movieId) {
+      this.getMovieById()
+    }
     this.$root.$on('applyFilters', () => {
       this.clickGetMovie()
     })
@@ -189,6 +198,21 @@ export default {
       this.movieLoading = true
 
       getRandomMovie(params)
+        .then(response => {
+          this.initialized = true
+          this.movie = response.data
+        })
+        .catch(error => console.error(error))
+        .finally(() => {
+          setTimeout(() => {
+            this.movieLoading = false
+          }, 1000)
+        })
+    },
+    getMovieById () {
+      this.movieLoading = true
+
+      getMovieById(this.movieId)
         .then(response => {
           this.initialized = true
           this.movie = response.data
