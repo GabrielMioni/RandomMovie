@@ -8,9 +8,10 @@ Vue.use(VueRouter)
 const routes = [
   ...adminRoutes,
   {
-    path: '/',
+    path: '/:movieId?',
     name: 'home',
-    component: Home
+    component: Home,
+    props: route => ({ movieId: route.params.movieId })
   },
   {
     path: '/about',
