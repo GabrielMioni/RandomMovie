@@ -1,6 +1,8 @@
 <template>
   <div>
-    <random-movie></random-movie>
+    <random-movie
+      :movieId="movieId">
+    </random-movie>
     <filters-drawer
       :filters-open="filtersOpen"
       @drawerIsOpen="toggleFilters">
@@ -15,6 +17,12 @@ import FiltersDrawer from '@/components/FiltersDrawer'
 
 export default {
   name: 'Home',
+  props: {
+    movieId: {
+      required: false,
+      default: null
+    }
+  },
   data () {
     return {
       filtersOpen: false
