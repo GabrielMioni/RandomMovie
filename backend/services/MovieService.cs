@@ -27,7 +27,7 @@ namespace backend.Services
             _mapper = mapper;
         }
 
-        public MovieDto GetSpecificMovie()
+        public MovieDto GetMovieById(int movieId)
         {
             var movie = _context.Movies
                 .Include(m => m.Country)
@@ -39,7 +39,8 @@ namespace backend.Services
                 .ThenInclude(mg => mg.Genre)
                 .Include(m => m.Movie_Person)
                 .ThenInclude(md => md.Person)
-                .FirstOrDefault(m => m.Id == 2580);
+                .FirstOrDefault(m => m.Id == movieId);
+            //.FirstOrDefault(m => m.Id == 2580);
 
             if (movie == null)
             {
