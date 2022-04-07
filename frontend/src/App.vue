@@ -3,13 +3,13 @@
     <v-main>
       <v-app-bar elevation="4">
       </v-app-bar>
-      <v-content
+      <v-main
         fluid
         class="fill-height">
         <router-view
           class="main">
         </router-view>
-      </v-content>
+      </v-main>
     </v-main>
   </v-app>
 </template>
