@@ -30,6 +30,11 @@ namespace backend.Controllers
         public IActionResult GetMovies([FromBody]RandomMovieRequest request = null)
         {
             var movie = _movieService.GetRandomMovieDto(request);
+
+            if (movie == null)
+            {
+                return new NoContentResult();
+            }
             return Ok(movie);
         }
 
