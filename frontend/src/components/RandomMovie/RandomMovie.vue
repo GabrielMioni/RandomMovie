@@ -29,7 +29,7 @@
                   </v-progress-circular>
                 </v-col>
                 <template
-                  v-else-if="initialized">
+                  v-else-if="initialized && movie.id > 0">
                   <v-col
                     md="6"
                     sm="12"
@@ -101,7 +101,12 @@
                         class="mb-3">
                         mdi-filmstrip
                       </v-icon>
-                      Click to get a random movie.
+                      <span v-if="initialized">
+                        No movies found. Try removing some filters.
+                      </span>
+                      <span v-else>
+                        Click to get a random movie.
+                      </span>
                     </div>
                   </v-col>
                   <v-spacer></v-spacer>
@@ -136,6 +141,7 @@ export default {
   data () {
     return {
       movie: {
+        id: 0,
         country: null,
         decade: null,
         directors: [],
@@ -200,6 +206,10 @@ export default {
       getRandomMovie(params)
         .then(response => {
           this.initialized = true
+          if (response.status === 204) {
+            this.resetMovie()
+            return
+          }
           this.movie = response.data
         })
         .catch(error => console.error(error))
@@ -223,6 +233,18 @@ export default {
             this.movieLoading = false
           }, 1000)
         })
+    },
+    resetMovie () {
+      this.movie = {
+        id: 0,
+        country: null,
+        decade: null,
+        directors: [],
+        genres: [],
+        meta: null,
+        title: '',
+        year: 0
+      }
     }
   }
 }
