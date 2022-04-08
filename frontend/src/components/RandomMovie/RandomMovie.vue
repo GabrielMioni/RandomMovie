@@ -82,7 +82,7 @@
                     </v-row>
                     <v-row>
                       <v-btn
-                        @click="clickGetMovie"
+                        @click="getMovie()"
                         width="100%">
                         Find another movie
                       </v-btn>
@@ -94,7 +94,7 @@
                     cols="12"
                     v-ripple
                     style="cursor: pointer"
-                    @click="clickGetMovie">
+                    @click="getMovie()">
                     <div class="d-flex flex-column align-center justify-center fill-height">
                       <v-icon
                         x-large
@@ -157,10 +157,10 @@ export default {
   },
   mounted () {
     if (this.movieId) {
-      this.getMovieById()
+      this.getMovie(true)
     }
     this.$root.$on('applyFilters', () => {
-      this.clickGetMovie()
+      this.getMovie()
     })
   },
   computed: {
@@ -192,8 +192,7 @@ export default {
     openFilters () {
       this.$root.$emit('openFilters')
     },
-    clickGetMovie () {
-      this.tab = 0
+    getMovieByFilters () {
       const params = {
         genreIds: this.selectedGenres,
         decadeIds: this.selectedDecades,
@@ -201,30 +200,26 @@ export default {
         directorIds: this.selectedDirectors
       }
 
+      return getRandomMovie(params)
+    },
+    getMovieById () {
+      return getMovieById(this.movieId)
+    },
+    getMovie (byId = false) {
+      this.tab = 0
       this.movieLoading = true
 
-      getRandomMovie(params)
+      const getMovieApiMethod = byId
+        ? this.getMovieById
+        : this.getMovieByFilters
+
+      getMovieApiMethod()
         .then(response => {
           this.initialized = true
           if (response.status === 204) {
             this.resetMovie()
             return
           }
-          this.movie = response.data
-        })
-        .catch(error => console.error(error))
-        .finally(() => {
-          setTimeout(() => {
-            this.movieLoading = false
-          }, 1000)
-        })
-    },
-    getMovieById () {
-      this.movieLoading = true
-
-      getMovieById(this.movieId)
-        .then(response => {
-          this.initialized = true
           this.movie = response.data
         })
         .catch(error => console.error(error))
