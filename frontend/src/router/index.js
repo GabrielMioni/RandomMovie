@@ -8,7 +8,16 @@ Vue.use(VueRouter)
 const routes = [
   ...adminRoutes,
   {
-    path: '/:movieId?',
+    path: '/',
+    name: 'root',
+    redirect: to => {
+      return {
+        path: '/movie:movieId?'
+      }
+    }
+  },
+  {
+    path: '/movie/:movieId?',
     name: 'home',
     component: Home,
     props: route => ({ movieId: route.params.movieId })
@@ -30,7 +39,7 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
+  // base: process.env.BASE_URL,
   routes
 })
 
