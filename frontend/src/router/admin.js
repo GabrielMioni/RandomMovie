@@ -1,8 +1,10 @@
+// import AdminMovies from '../views/admin/AdminMovies'
+
 export const adminRoutes = [
   {
     path: '/admin',
     name: 'admin',
-    component: () => import(/* webpackChunkName: "login" */ '../views/admin/AdminHome.vue'),
+    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/AdminHome.vue'),
     beforeEnter (to, from, next) {
       const { expires, role } = JSON.parse(localStorage.getItem('user'))
 
@@ -15,6 +17,23 @@ export const adminRoutes = [
         return
       }
       next()
-    }
+    },
+    redirect: to => {
+      return {
+        path: '/admin/movies'
+      }
+    },
+    children: [
+      {
+        path: 'movies',
+        name: 'adminMovies',
+        component: () => import(/* webpackChunkName: "adminMovies" */ '../views/admin/AdminMovies.vue')
+      },
+      {
+        path: 'filters',
+        name: 'adminFilters',
+        component: () => import(/* webpackChunkName: "adminFilters" */ '../views/admin/AdminFilters.vue')
+      }
+    ]
   }
 ]
