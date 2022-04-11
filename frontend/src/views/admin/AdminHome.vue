@@ -1,15 +1,5 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <v-card>
-          <v-card-text>
-            Welcome to Admin
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+  <router-view></router-view>
 </template>
 
 <script>
