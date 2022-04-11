@@ -1,28 +1,35 @@
 <template>
   <v-app>
+    <v-app-bar
+      v-if="!currentRouteIsAdmin"
+      elevation="4"
+      max-height="80px">
+    </v-app-bar>
+    <admin-sidebar v-if="currentRouteIsAdmin"></admin-sidebar>
     <v-main>
-      <v-app-bar elevation="4">
-      </v-app-bar>
-      <v-main
-        fluid
-        class="fill-height">
-        <router-view
-          class="main">
+      <v-container>
+        <router-view>
         </router-view>
-      </v-main>
+      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import AdminSidebar from './components/AdminSidebar'
 
 export default {
   name: 'App',
-
-  data: () => ({
-    //
-  }),
+  components: {
+    AdminSidebar
+  },
+  computed: {
+    currentRouteIsAdmin () {
+      const { path } = this.$route
+      return path.split('/').filter(part => part === 'admin').length > 0
+    }
+  },
   mounted () {
     this.initUserData()
     this.setConfigurationDetails()
