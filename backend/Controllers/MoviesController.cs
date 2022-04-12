@@ -50,5 +50,13 @@ namespace backend.Controllers
             var movie = _movieService.GetMovieById(movieId);
             return Ok(movie);
         }
+
+        [HttpPost]
+        [Route("GetMovies")]
+        public IActionResult GetPaginatedMovies(GetMoviesPaginatedRequest request)
+        {
+            var movies = _movieService.GetMoviesPaginated(request);
+            return Ok(movies);
+        }
     }
 }

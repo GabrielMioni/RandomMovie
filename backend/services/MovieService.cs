@@ -27,6 +27,38 @@ namespace backend.Services
             _mapper = mapper;
         }
 
+        public GetMoviesPaginatedResponse GetMoviesPaginated(GetMoviesPaginatedRequest request)
+        {
+            var page = request.Page <= 0 ? 0 : request.Page - 1;
+            var take = request.Take <= 0 ? 1 : request.Take;
+
+            var totalMovieCount = _context.Movies.Count();
+
+            var movies = _context.Movies
+                .Include(m => m.Country)
+                .Include(m => m.Decade)
+                .Include(m => m.Meta)
+                .Include(m => m.Movie_Directors)
+                .ThenInclude(md => md.Director)
+                .Include(m => m.Movie_Genres)
+                .ThenInclude(mg => mg.Genre)
+                .Include(m => m.Movie_Person)
+                .ThenInclude(md => md.Person)
+                .Skip(page)
+                .Take(take);
+
+            var movieDtos = movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
+            var total = movieDtos.Count;
+            var pageCount = Decimal.Divide(totalMovieCount, take);
+
+            return new GetMoviesPaginatedResponse
+            {
+                Movies = movieDtos,
+                Total = total,
+                PageCount = (int)Math.Ceiling(pageCount)
+            };
+        }
+
         public MovieDto GetMovieById(int movieId)
         {
             var movie = _context.Movies
