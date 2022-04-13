@@ -45,7 +45,8 @@ namespace backend.Services
                 .Include(m => m.Movie_Person)
                 .ThenInclude(md => md.Person)
                 .Skip(page)
-                .Take(take);
+                .Take(take)
+                .OrderBy(m => m.Title);
 
             var movieDtos = movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
             var total = movieDtos.Count;
@@ -54,7 +55,7 @@ namespace backend.Services
             return new GetMoviesPaginatedResponse
             {
                 Movies = movieDtos,
-                Total = total,
+                Total = totalMovieCount,
                 PageCount = (int)Math.Ceiling(pageCount)
             };
         }
