@@ -5,3 +5,6 @@ export const getRandomMovie = (params = {}) =>
 
 export const getMovieById = (movieId) =>
   axios.get(`/api/Movies/${movieId}`)
+
+export const getMovies = (params = {}) =>
+  axios.post('/api/Movies/GetMovies', params)
