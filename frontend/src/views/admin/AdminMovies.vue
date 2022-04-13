@@ -4,7 +4,17 @@
       <v-col>
         <v-card>
           <v-card-text>
+            <v-data-table
+              :headers="headers"
+              :items="movies"
+              :options.sync="options"
+              :server-items-length="total"
+              :items-per-page="options.take">
+            </v-data-table>
             Welcome to Admin Movies
+            <v-btn @click="getMovies">
+              Do get movie stuff
+            </v-btn>
           </v-card-text>
         </v-card>
       </v-col>
@@ -13,8 +23,62 @@
 </template>
 
 <script>
+import { getMovies } from '@/api/movies'
+
 export default {
-  name: 'AdminMovies'
+  name: 'AdminMovies',
+  data () {
+    return {
+      headers: [
+        {
+          text: 'title',
+          align: 'start',
+          sortable: false,
+          value: 'title'
+        },
+        {
+          text: 'country',
+          align: 'start',
+          sortable: false,
+          value: 'country'
+        },
+        {
+          text: 'year',
+          align: 'start',
+          sortable: false,
+          value: 'year'
+        }
+      ],
+      movies: [],
+      options: {
+        page: 1,
+        take: 25
+      },
+      total: 0
+    }
+  },
+  mounted () {
+    // this.getMovies()
+  },
+  watch: {
+    options () {
+      this.getMovies()
+    }
+  },
+  methods: {
+    getMovies () {
+      console.log('GetMovies called')
+      getMovies(this.options)
+        .then(response => {
+          if (response.status !== 200) {
+            return
+          }
+          const { data: { movies, total } } = response
+          this.movies = movies
+          this.total = total
+        })
+    }
+  }
 }
 </script>
 
