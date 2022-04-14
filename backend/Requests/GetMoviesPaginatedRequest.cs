@@ -3,6 +3,6 @@
     public class GetMoviesPaginatedRequest
     {
         public int Page { get; set; }
-        public int Take { get; set; }
+        public int ItemsPerPage { get; set; }
     }
 }
