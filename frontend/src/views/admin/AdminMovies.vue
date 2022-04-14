@@ -7,7 +7,12 @@
             <v-data-table
               :headers="headers"
               :items="movies"
+              :footer-props="{
+                'items-per-page-options': [10, 20, 30, 40, 50]
+              }"
+              :items-per-page="20"
               :options.sync="options"
+              :loading="loading"
               :server-items-length="total">
             </v-data-table>
             Welcome to Admin Movies
@@ -48,6 +53,7 @@ export default {
           value: 'year'
         }
       ],
+      loading: true,
       movies: [],
       options: {},
       total: 0
@@ -64,6 +70,7 @@ export default {
   methods: {
     getMovies () {
       console.log('GetMovies called')
+      this.loading = true
       getMovies(this.options)
         .then(response => {
           if (response.status !== 200) {
@@ -72,6 +79,10 @@ export default {
           const { data: { movies, total } } = response
           this.movies = movies
           this.total = total
+        })
+        .catch(error => console.error(error))
+        .finally(() => {
+          this.loading = false
         })
     }
   }
