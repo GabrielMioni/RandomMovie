@@ -8,8 +8,7 @@
               :headers="headers"
               :items="movies"
               :options.sync="options"
-              :server-items-length="total"
-              :items-per-page="options.take">
+              :server-items-length="total">
             </v-data-table>
             Welcome to Admin Movies
             <v-btn @click="getMovies">
@@ -50,10 +49,7 @@ export default {
         }
       ],
       movies: [],
-      options: {
-        page: 1,
-        take: 25
-      },
+      options: {},
       total: 0
     }
   },
