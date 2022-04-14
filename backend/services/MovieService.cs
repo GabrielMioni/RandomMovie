@@ -29,8 +29,10 @@ namespace backend.Services
 
         public GetMoviesPaginatedResponse GetMoviesPaginated(GetMoviesPaginatedRequest request)
         {
-            var page = request.Page <= 0 ? 0 : request.Page - 1;
-            var take = request.Take <= 0 ? 1 : request.Take;
+            var page = request.Page <= 0 ? 1 : request.Page;
+            var itemsPerPage = request.ItemsPerPage <= 0 ? 5 : request.ItemsPerPage;
+
+            var skip = (page - 1) * itemsPerPage;
 
             var totalMovieCount = _context.Movies.Count();
 
@@ -44,13 +46,13 @@ namespace backend.Services
                 .ThenInclude(mg => mg.Genre)
                 .Include(m => m.Movie_Person)
                 .ThenInclude(md => md.Person)
-                .Skip(page)
-                .Take(take)
+                .Skip(skip)
+                .Take(itemsPerPage)
                 .OrderBy(m => m.Title);
 
             var movieDtos = movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
             var total = movieDtos.Count;
-            var pageCount = Decimal.Divide(totalMovieCount, take);
+            var pageCount = Decimal.Divide(totalMovieCount, itemsPerPage);
 
             return new GetMoviesPaginatedResponse
             {
