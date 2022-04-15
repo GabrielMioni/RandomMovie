@@ -46,9 +46,9 @@ namespace backend.Services
                 .ThenInclude(mg => mg.Genre)
                 .Include(m => m.Movie_Person)
                 .ThenInclude(md => md.Person)
+                .OrderBy(m => m.Title)
                 .Skip(skip)
-                .Take(itemsPerPage)
-                .OrderBy(m => m.Title);
+                .Take(itemsPerPage);
 
             var movieDtos = movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
             var total = movieDtos.Count;
