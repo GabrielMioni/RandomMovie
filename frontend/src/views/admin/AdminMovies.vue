@@ -6,7 +6,7 @@
           <v-card-text>
             <v-data-table
               :headers="headers"
-              :items="movies"
+              :items="moviesFormatted"
               :footer-props="{
                 'items-per-page-options': [10, 20, 30, 40, 50]
               }"
@@ -33,26 +33,6 @@ export default {
   name: 'AdminMovies',
   data () {
     return {
-      headers: [
-        {
-          text: 'title',
-          align: 'start',
-          sortable: false,
-          value: 'title'
-        },
-        {
-          text: 'country',
-          align: 'start',
-          sortable: false,
-          value: 'country'
-        },
-        {
-          text: 'year',
-          align: 'start',
-          sortable: false,
-          value: 'year'
-        }
-      ],
       loading: true,
       movies: [],
       options: {},
@@ -61,6 +41,45 @@ export default {
   },
   mounted () {
     // this.getMovies()
+  },
+  computed: {
+    headers () {
+      const headers = [
+        'id',
+        'title',
+        'country',
+        'directors',
+        'genres',
+        'year'
+      ].map(headerName => {
+        return {
+          text: headerName,
+          align: 'start',
+          sortable: true,
+          value: headerName
+        }
+      })
+      headers.push({
+        text: '',
+        align: 'start',
+        sortable: true,
+        value: 'action'
+      })
+      return headers
+    },
+    moviesFormatted () {
+      return this.movies.map(movie => {
+        return {
+          id: movie.id,
+          title: movie.title,
+          country: movie.country.name,
+          directors: movie.directors.map(d => d.name).join(' / '),
+          genres: movie.genres.map(g => g.name).join(' / '),
+          year: movie.year,
+          action: true
+        }
+      })
+    }
   },
   watch: {
     options () {
