@@ -34,9 +34,12 @@ namespace backend.Services
 
             var skip = (page - 1) * itemsPerPage;
 
+            var sortDesc = request.SortDesc;
+            var sortBy = request.SortBy;
+
             var totalMovieCount = _context.Movies.Count();
 
-            var movies = _context.Movies
+            var moviesIncludeQueryable = _context.Movies
                 .Include(m => m.Country)
                 .Include(m => m.Decade)
                 .Include(m => m.Meta)
@@ -46,11 +49,32 @@ namespace backend.Services
                 .ThenInclude(mg => mg.Genre)
                 .Include(m => m.Movie_Person)
                 .ThenInclude(md => md.Person)
-                .OrderBy(m => m.Title)
-                .Skip(skip)
-                .Take(itemsPerPage);
+                .AsQueryable();
 
-            var movieDtos = movies.Select(m => _mapper.Map<MovieDto>(m)).ToList();
+            if (sortBy.Count > 0)
+            {
+                var orderBy = SetMovieOrderBy(moviesIncludeQueryable, sortBy[0], sortDesc[0]);
+
+                if (sortBy.Count > 1)
+                {
+                    var sortIndex = 1;
+
+                    while (sortIndex <= sortBy.Count -1)
+                    {
+                        var by = sortBy[sortIndex];
+                        var desc = sortDesc[sortIndex];
+
+                        orderBy = SetMovieThenOrderBy(orderBy, by, desc);
+                        sortIndex++;
+                    }
+                }
+
+                moviesIncludeQueryable = orderBy.AsQueryable();
+            }
+
+            var skipTakeQueryable = moviesIncludeQueryable.Skip(skip).Take(itemsPerPage);
+
+            var movieDtos = skipTakeQueryable.Select(m => _mapper.Map<MovieDto>(m)).ToList();
             var total = movieDtos.Count;
             var pageCount = Decimal.Divide(totalMovieCount, itemsPerPage);
 
@@ -60,6 +84,72 @@ namespace backend.Services
                 Total = totalMovieCount,
                 PageCount = (int)Math.Ceiling(pageCount)
             };
+        }
+
+        private IOrderedEnumerable<Movie> SetMovieOrderBy (IQueryable<Movie> moviesQueryable, string sortBy, bool sortDesc)
+        {
+            switch (sortBy)
+            {
+                case "id":
+                    return sortDesc
+                        ? moviesQueryable.OrderByDescending(MovieColumnOrder.IdColumn)
+                        : moviesQueryable.OrderBy(MovieColumnOrder.IdColumn);
+                case "country":
+                    return sortDesc
+                        ? moviesQueryable.OrderByDescending(MovieColumnOrder.CountryColumn)
+                        : moviesQueryable.OrderBy(MovieColumnOrder.CountryColumn);
+                case "directors":
+                    return sortDesc
+                        ? moviesQueryable.OrderByDescending(MovieColumnOrder.DirectorColumn)
+                        : moviesQueryable.OrderBy(MovieColumnOrder.DirectorColumn);
+                case "genres":
+                    return sortDesc
+                        ? moviesQueryable.OrderByDescending(MovieColumnOrder.GenreColumn)
+                        : moviesQueryable.OrderBy(MovieColumnOrder.GenreColumn);
+                case "year":
+                    return sortDesc
+                        ? moviesQueryable.OrderByDescending(MovieColumnOrder.YearColumn)
+                        : moviesQueryable.OrderBy(MovieColumnOrder.YearColumn);
+                case "title":
+                    return sortDesc
+                        ? moviesQueryable.OrderByDescending(MovieColumnOrder.TitleColumn)
+                        : moviesQueryable.OrderBy(MovieColumnOrder.TitleColumn);
+                default:
+                    return null;
+            }
+        }
+
+        private IOrderedEnumerable<Movie> SetMovieThenOrderBy(IOrderedEnumerable<Movie> moviesQueryable, string sortBy, bool sortDesc)
+        {
+            switch (sortBy)
+            {
+                case "id":
+                    return sortDesc
+                        ? moviesQueryable.ThenByDescending(MovieColumnOrder.IdColumn)
+                        : moviesQueryable.ThenBy(MovieColumnOrder.IdColumn);
+                case "country":
+                    return sortDesc
+                        ? moviesQueryable.ThenByDescending(MovieColumnOrder.CountryColumn)
+                        : moviesQueryable.ThenBy(MovieColumnOrder.CountryColumn);
+                case "directors":
+                    return sortDesc
+                        ? moviesQueryable.ThenByDescending(MovieColumnOrder.DirectorColumn)
+                        : moviesQueryable.ThenBy(MovieColumnOrder.DirectorColumn);
+                case "genres":
+                    return sortDesc
+                        ? moviesQueryable.ThenByDescending(MovieColumnOrder.GenreColumn)
+                        : moviesQueryable.ThenBy(MovieColumnOrder.GenreColumn);
+                case "year":
+                    return sortDesc
+                        ? moviesQueryable.ThenByDescending(MovieColumnOrder.YearColumn)
+                        : moviesQueryable.ThenBy(MovieColumnOrder.YearColumn);
+                case "title":
+                    return sortDesc
+                        ? moviesQueryable.OrderByDescending(MovieColumnOrder.TitleColumn)
+                        : moviesQueryable.OrderBy(MovieColumnOrder.TitleColumn);
+                default:
+                    return null;
+            }
         }
 
         public MovieDto GetMovieById(int movieId)
