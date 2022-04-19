@@ -16,7 +16,12 @@
               :server-items-length="total">
               <template v-slot:item.action="{ item }">
                 <v-btn
-                  @click="edit(item.id)">Edit</v-btn>
+                  icon
+                  @click="edit(item.id)">
+                  <v-icon>
+                    mdi-pencil
+                  </v-icon>
+                </v-btn>
               </template>
             </v-data-table>
           </v-card-text>
