@@ -14,11 +14,11 @@
               :options.sync="options"
               :loading="loading"
               :server-items-length="total">
+              <template v-slot:item.action="{ item }">
+                <v-btn
+                  @click="edit(item.id)">Edit</v-btn>
+              </template>
             </v-data-table>
-            Welcome to Admin Movies
-            <v-btn @click="getMovies">
-              Do get movie stuff
-            </v-btn>
           </v-card-text>
         </v-card>
       </v-col>
@@ -62,7 +62,7 @@ export default {
       headers.push({
         text: '',
         align: 'start',
-        sortable: true,
+        sortable: false,
         value: 'action'
       })
       return headers
@@ -71,7 +71,7 @@ export default {
       return this.movies.map(movie => {
         return {
           id: movie.id,
-          title: movie.title,
+          title: this.decodeHtml(movie.title),
           country: movie.country.name,
           directors: movie.directors.map(d => d.name).join(' / '),
           genres: movie.genres.map(g => g.name).join(' / '),
@@ -87,6 +87,11 @@ export default {
     }
   },
   methods: {
+    edit (id) {
+      const index = this.movies.findIndex(m => m.id === id)
+      const movie = this.movies[index]
+      console.log(movie)
+    },
     getMovies () {
       console.log('GetMovies called')
       this.loading = true
@@ -103,6 +108,11 @@ export default {
         .finally(() => {
           this.loading = false
         })
+    },
+    decodeHtml (value) {
+      const textArea = document.createElement('textarea')
+      textArea.innerHTML = value
+      return textArea.value
     }
   }
 }
