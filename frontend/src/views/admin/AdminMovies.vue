@@ -28,23 +28,35 @@
         </v-card>
       </v-col>
     </v-row>
+    <edit-movie-dialog
+      v-if="selectedMovie"
+      v-model="showEditDialog"
+      :movie="selectedMovie">
+    </edit-movie-dialog>
   </v-container>
 </template>
 
 <script>
 import { getMovies } from '@/api/movies'
+import EditMovieDialog from '@/components/EditMovieDialog.vue'
 
 export default {
   name: 'AdminMovies',
+  components: {
+    EditMovieDialog
+  },
   data () {
     return {
       loading: true,
       movies: [],
       options: {},
-      total: 0
+      total: 0,
+      showEditDialog: false,
+      selectedMovieId: null
     }
   },
   mounted () {
+    this.$vuetify.theme.dark = false
     // this.getMovies()
   },
   computed: {
@@ -84,18 +96,30 @@ export default {
           action: true
         }
       })
+    },
+    selectedMovie () {
+      const { selectedMovieId } = this
+      if (!selectedMovieId) {
+        return null
+      }
+      const index = this.movies.findIndex(m => m.id === selectedMovieId)
+      return this.movies[index]
     }
   },
   watch: {
     options () {
       this.getMovies()
+    },
+    showEditDialog (value) {
+      if (!value) {
+        this.selectedMovieId = null
+      }
     }
   },
   methods: {
     edit (id) {
-      const index = this.movies.findIndex(m => m.id === id)
-      const movie = this.movies[index]
-      console.log(movie)
+      this.selectedMovieId = id
+      this.showEditDialog = true
     },
     getMovies () {
       console.log('GetMovies called')
