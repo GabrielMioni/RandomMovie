@@ -32,6 +32,12 @@ export default {
     RandomMovie,
     FiltersDrawer
   },
+  beforeMount () {
+    this.$vuetify.theme.dark = true
+  },
+  beforeDestroy () {
+    this.$vuetify.theme.dark = false
+  },
   methods: {
     toggleFilters (value) {
       this.filtersOpen = value
