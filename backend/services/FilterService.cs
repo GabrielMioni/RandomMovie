@@ -34,6 +34,37 @@ namespace backend.Services
             await SaveAllFiltersAsync();
         }
 
+        public List<DirectorDto> SearchDirectors (string search)
+        {
+            var directorDbSet = _context.Directors;
+
+            var searchString = search ?? string.Empty;
+
+            if (searchString != null && searchString.Trim().Length > 0)
+            {
+                var blah = directorDbSet.Where(d => d.Name == searchString).ToList();
+            }
+
+            var directors = searchString.Trim().Length > 0
+                ? _context.Directors.Where(d => d.Name.Contains(searchString)).Take(25)
+                : _context.Directors.Take(25);
+
+            //var directors = searchString.Trim().Length > 0
+            //    ? directorDbSet.Where(d => d.Name == searchString)
+            //    : directorDbSet;
+
+            var helloDirectors = directors.ToList();
+
+            var results =  directors.Select(d => _mapper.Map<DirectorDto>(d)).ToList();
+
+            return results;
+
+
+            //var directorDtos = directors.Select(d => _mapper.Map<DirectorDto>(d)).ToList();
+
+            // return directorDtos;
+        }
+
         public object GetAllFiltersData()
         {
             var countries = _context.Countries.ToList();
