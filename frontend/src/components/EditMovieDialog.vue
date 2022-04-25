@@ -4,20 +4,33 @@
     :fullscreen="$vuetify.breakpoint.smAndDown"
     v-model="open">
     <v-card>
+      <v-toolbar
+        color="primary"
+        flat>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="white"
+          icon
+          @click="open = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-toolbar>
       <v-card-text>
         <v-form>
           <v-container>
             <v-row>
               <v-col>
                 <v-text-field
-                  v-model="movie.title"
-                  solo>
+                  v-model="movieLocal.title"
+                  label="Title"
+                  outlined>
                 </v-text-field>
               </v-col>
               <v-col>
                 <v-text-field
-                  v-model="movie.title"
-                  solo>
+                  v-model="movieLocal.year"
+                  label="Year"
+                  outlined>
                 </v-text-field>
               </v-col>
             </v-row>
@@ -46,10 +59,8 @@ export default {
       type: Object
     }
   },
-  watch: {
-    movie () {
-      this.movieLocal = { ...this.movie }
-    }
+  mounted () {
+    this.movieLocal = { ...this.movie }
   },
   computed: {
     open: {
