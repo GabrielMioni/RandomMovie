@@ -43,5 +43,14 @@ namespace backend.Controllers
             var filterResponse = _filterService.GetAllFiltersData();
             return Ok(filterResponse);
         }
+
+        [HttpGet]
+        [Route("Directors")]
+        public IActionResult SearchDirectors(string search)
+        {
+            var directors = _filterService.SearchDirectors(search);
+
+            return Ok(directors);
+        }
     }
 }
