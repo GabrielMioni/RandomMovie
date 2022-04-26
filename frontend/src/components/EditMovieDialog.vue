@@ -101,6 +101,10 @@ export default {
   },
   watch: {
     directorSearch () {
+      if (this.directorSearchTimeout) {
+        clearTimeout(this.directorSearchTimeout)
+        this.directorSearchTimeout = null
+      }
       this.directorSearchTimeout = setTimeout(() => {
         searchDirectors(this.directorSearch)
           .then(response => {
@@ -125,7 +129,15 @@ export default {
       const movieDirectors = this.movie.directors
       const existingDirectorIds = movieDirectors.map(d => d.id)
 
-      return movieDirectors.concat(directors.filter(d => !existingDirectorIds.includes(d.id)))
+      return movieDirectors
+        .concat(directors.filter(d => !existingDirectorIds.includes(d.id)))
+        .map(d => {
+          const { firstName, lastName } = d
+          if (firstName !== lastName) {
+            d.name = `${lastName}, ${firstName}`
+          }
+          return d
+        })
     },
     open: {
       get () {
