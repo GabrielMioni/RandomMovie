@@ -39,8 +39,8 @@ namespace backend.Services
             var searchString = search ?? string.Empty;
 
             var directors = searchString.Trim().Length > 0
-                ? _context.Directors.Where(d => d.Name.Contains(searchString)).Take(25)
-                : _context.Directors.Take(25);
+                ? _context.Directors.Where(d => d.Name.Contains(searchString) && d.Name != "").OrderBy(d => d.LastName).Take(25)
+                : _context.Directors.Where(d => d.Name != "").OrderBy(d => d.LastName).Take(25);
 
             return directors.Select(d => _mapper.Map<DirectorDto>(d)).ToList();
         }
