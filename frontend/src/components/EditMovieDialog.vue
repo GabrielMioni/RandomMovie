@@ -44,13 +44,16 @@
                 </v-text-field>
               </v-col>
             </v-row>
+          </v-container>
+          <v-container class="directors">
             <v-row
-              class="directors"
               dense>
               <v-col
                 v-for="director in displayDirectors"
+                class="directors__item"
+                align-self="start"
                 :key="`director-checkbox-${director.id}`"
-                :cols="4">
+                cols="4">
                 <v-checkbox
                   v-model="selectedDirectors"
                   dense
