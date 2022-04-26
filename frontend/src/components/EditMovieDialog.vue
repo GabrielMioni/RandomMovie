@@ -34,6 +34,33 @@
                 </v-text-field>
               </v-col>
             </v-row>
+            <v-row dense>
+              <v-col>
+                <v-text-field
+                  v-model="directorSearch"
+                  label="Search Directors"
+                  hide-details
+                  outlined>
+                </v-text-field>
+              </v-col>
+            </v-row>
+            <v-row
+              class="directors"
+              dense>
+              <v-col
+                v-for="director in displayDirectors"
+                :key="`director-checkbox-${director.id}`"
+                :cols="4">
+                <v-checkbox
+                  v-model="selectedDirectors"
+                  dense
+                  hide-details
+                  multiple
+                  :value="director.id"
+                  :label="director.name">
+                </v-checkbox>
+              </v-col>
+            </v-row>
           </v-container>
         </v-form>
       </v-card-text>
@@ -42,11 +69,18 @@
 </template>
 
 <script>
+import { searchDirectors } from '@/api/filters'
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'EditMovieDialog',
   data () {
     return {
-      movieLocal: {}
+      movieLocal: {},
+      directorSearch: '',
+      directors: [],
+      selectedDirectors: [],
+      directorSearchTimeout: null
     }
   },
   props: {
@@ -59,10 +93,37 @@ export default {
       type: Object
     }
   },
+  methods: {
+    ...mapActions('admin', ['setDefaultDirectors'])
+  },
+  watch: {
+    directorSearch () {
+      this.directorSearchTimeout = setTimeout(() => {
+        searchDirectors(this.directorSearch)
+          .then(response => {
+            this.directors = response.data
+          })
+          .catch(error => console.error(error))
+      }, 500)
+    }
+  },
   mounted () {
     this.movieLocal = { ...this.movie }
+    this.selectedDirectors = this.movie.directors.map(movie => movie.id)
+    this.setDefaultDirectors()
   },
   computed: {
+    ...mapGetters('admin', ['defaultDirectors']),
+    displayDirectors () {
+      const directors = this.directorSearch.trim().length > 0
+        ? this.directors
+        : this.defaultDirectors
+
+      const movieDirectors = this.movie.directors
+      const existingDirectorIds = movieDirectors.map(d => d.id)
+
+      return movieDirectors.concat(directors.filter(d => !existingDirectorIds.includes(d.id)))
+    },
     open: {
       get () {
         return this.value
@@ -75,6 +136,9 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.directors {
+  height: 200px;
+  overflow: auto;
+}
 </style>
