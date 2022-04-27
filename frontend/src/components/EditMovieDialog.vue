@@ -35,34 +35,19 @@
               </v-col>
             </v-row>
             <v-row dense>
-              <v-col>
-                <v-text-field
-                  v-model="directorSearch"
-                  label="Search Directors"
-                  hide-details
-                  outlined>
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-          <v-container class="directors">
-            <v-row
-              dense>
-              <v-col
-                v-for="director in displayDirectors"
-                class="directors__item"
-                align-self="start"
-                :key="`director-checkbox-${director.id}`"
-                cols="4">
-                <v-checkbox
-                  v-model="selectedDirectors"
-                  dense
-                  hide-details
-                  multiple
-                  :value="director.id"
-                  :label="director.name">
-                </v-checkbox>
-              </v-col>
+              <v-combobox
+                ref="combobox"
+                v-model="selectedDirectors"
+                :items="displayDirectors"
+                multiple
+                return-object
+                outlined
+                chips
+                deletable-chips
+                open-on-clear
+                @change="updateCombo"
+                item-text="name">
+              </v-combobox>
             </v-row>
           </v-container>
         </v-form>
@@ -83,7 +68,8 @@ export default {
       directorSearch: '',
       directors: [],
       selectedDirectors: [],
-      directorSearchTimeout: null
+      directorSearchTimeout: null,
+      inputElm: null
     }
   },
   props: {
@@ -97,7 +83,23 @@ export default {
     }
   },
   methods: {
-    ...mapActions('admin', ['setDefaultDirectors'])
+    ...mapActions('admin', ['setDefaultDirectors']),
+    updateCombo () {
+      if (this.selectedDirectors.length <= 0) {
+        this.directorSearch = ''
+      }
+    },
+    setInputValue (event) {
+      this.directorSearch = event.target.value
+    },
+    addInputEventListener () {
+      const combobox = this.$refs.combobox.$el
+      this.inputElm = combobox.querySelectorAll('input[type="text"]')[0]
+      this.inputElm.addEventListener('input', this.setInputValue)
+    },
+    removeInputEventListener () {
+      this.inputElm.removeEventListener('input', this.setInputValue)
+    }
   },
   watch: {
     directorSearch () {
@@ -116,8 +118,13 @@ export default {
   },
   mounted () {
     this.movieLocal = { ...this.movie }
-    this.selectedDirectors = this.movie.directors.map(movie => movie.id)
+    this.selectedDirectors = this.movie.directors
     this.setDefaultDirectors()
+
+    this.addInputEventListener()
+  },
+  beforeDestroy () {
+    this.removeInputEventListener()
   },
   computed: {
     ...mapGetters('admin', ['defaultDirectors']),
@@ -126,18 +133,15 @@ export default {
         ? this.directors
         : this.defaultDirectors
 
-      const movieDirectors = this.movie.directors
-      const existingDirectorIds = movieDirectors.map(d => d.id)
+      const existingDirectorIds = this.selectedDirectors.map(d => d.id)
 
-      return movieDirectors
-        .concat(directors.filter(d => !existingDirectorIds.includes(d.id)))
-        .map(d => {
-          const { firstName, lastName } = d
-          if (firstName !== lastName) {
-            d.name = `${lastName}, ${firstName}`
-          }
-          return d
-        })
+      return directors.map(d => {
+        const { firstName, lastName } = d
+        if (firstName !== lastName) {
+          d.name = `${lastName}, ${firstName}`
+        }
+        return d
+      }).filter(d => !existingDirectorIds.includes(d.id))
     },
     open: {
       get () {
