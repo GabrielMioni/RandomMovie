@@ -94,7 +94,7 @@ export default {
     },
     addInputEventListener () {
       const combobox = this.$refs.combobox.$el
-      this.inputElm = combobox.querySelectorAll('input[type="text"]')[0]
+      this.inputElm = combobox.querySelector('input[type="text"]')
       this.inputElm.addEventListener('input', this.setInputValue)
     },
     removeInputEventListener () {
