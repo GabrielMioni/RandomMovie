@@ -38,7 +38,7 @@
 
 <script>
 import { getMovies } from '@/api/movies'
-import EditMovieDialog from '@/components/EditMovieDialog.vue'
+import EditMovieDialog from '@/components/EditMovieDialog/EditMovieDialog.vue'
 
 export default {
   name: 'AdminMovies',
