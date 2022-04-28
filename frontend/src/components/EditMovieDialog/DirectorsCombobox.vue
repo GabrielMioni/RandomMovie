@@ -24,6 +24,7 @@ export default {
     return {
       directors: [],
       directorSearch: '',
+      directorSearchTimeout: null,
       movieLocal: {},
       selectedDirectorsLocal: []
     }
