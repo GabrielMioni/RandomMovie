@@ -88,6 +88,7 @@ export default {
       if (this.selectedDirectors.length <= 0) {
         this.directorSearch = ''
       }
+      this.selectedDirectors = this.selectedDirectors.filter(director => director.id !== undefined)
     },
     setInputValue (event) {
       this.directorSearch = event.target.value
