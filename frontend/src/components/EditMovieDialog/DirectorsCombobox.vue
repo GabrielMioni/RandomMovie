@@ -5,6 +5,7 @@
     chips
     deletable-chips
     item-text="name"
+    label="Directors"
     multiple
     open-on-clear
     outlined
