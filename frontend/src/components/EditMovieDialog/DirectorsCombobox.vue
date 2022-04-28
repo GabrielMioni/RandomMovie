@@ -1,26 +1,22 @@
 <template>
-  <v-combobox
-    v-model="selectedDirectorsLocal"
+  <combobox-server-side
+    v-model="directorSearch"
     :items="displayDirectors"
-    chips
-    deletable-chips
     item-text="name"
     label="Directors"
-    multiple
-    open-on-clear
-    outlined
-    ref="combobox"
-    return-object
-    @change="updateCombo">
-  </v-combobox>
+    :selected-items="selectedDirectorsLocal"
+    @selectedItemsUpdate="updateSelectedItems">
+  </combobox-server-side>
 </template>
 
 <script>
 import { searchDirectors } from '@/api/filters'
 import { mapActions, mapGetters } from 'vuex'
+import ComboboxServerSide from '../ComboboxServerSide.vue'
 
 export default {
   name: 'DirectorsCombobox',
+  components: { ComboboxServerSide },
   data () {
     return {
       directors: [],
@@ -42,14 +38,10 @@ export default {
   },
   mounted () {
     this.movieLocal = { ...this.movie }
+    this.selectedDirectorsLocal = [...this.movie.directors]
     if (this.defaultDirectors.length <= 0) {
       this.setDefaultDirectors()
     }
-
-    this.addInputEventListener()
-  },
-  beforeDestroy () {
-    this.removeInputEventListener()
   },
   computed: {
     ...mapGetters('admin', ['defaultDirectors']),
@@ -89,23 +81,8 @@ export default {
   },
   methods: {
     ...mapActions('admin', ['setDefaultDirectors']),
-    updateCombo () {
-      if (this.selectedDirectorsLocal.length <= 0) {
-        this.directorSearch = ''
-      }
-      this.selectedDirectorsLocal = this.selectedDirectorsLocal.filter(director => director.id !== undefined)
-      this.$emit('input', this.selectedDirectorsLocal)
-    },
-    setInputValue (event) {
-      this.directorSearch = event.target.value
-    },
-    addInputEventListener () {
-      const combobox = this.$refs.combobox.$el
-      this.inputElm = combobox.querySelector('input[type="text"]')
-      this.inputElm.addEventListener('input', this.setInputValue)
-    },
-    removeInputEventListener () {
-      this.inputElm.removeEventListener('input', this.setInputValue)
+    updateSelectedItems (value) {
+      this.selectedDirectorsLocal = value
     }
   }
 }
