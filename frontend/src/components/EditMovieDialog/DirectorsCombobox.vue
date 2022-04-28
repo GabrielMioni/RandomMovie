@@ -4,7 +4,7 @@
     :items="displayDirectors"
     item-text="name"
     label="Directors"
-    :selected-items="selectedDirectorsLocal"
+    :selected-items="selectedDirectors"
     @selectedItemsUpdate="updateSelectedItems">
   </combobox-server-side>
 </template>
@@ -23,7 +23,7 @@ export default {
       directorSearch: '',
       directorSearchTimeout: null,
       movieLocal: {},
-      selectedDirectorsLocal: []
+      selectedDirectors: []
     }
   },
   props: {
@@ -38,7 +38,7 @@ export default {
   },
   mounted () {
     this.movieLocal = { ...this.movie }
-    this.selectedDirectorsLocal = [...this.movie.directors]
+    this.selectedDirectors = [...this.movie.directors]
     if (this.defaultDirectors.length <= 0) {
       this.setDefaultDirectors()
     }
@@ -50,7 +50,7 @@ export default {
         ? this.directors
         : this.defaultDirectors
 
-      const existingDirectorIds = this.selectedDirectorsLocal.map(d => d.id)
+      const existingDirectorIds = this.selectedDirectors.map(d => d.id)
 
       return directors.map(d => {
         const { firstName, lastName } = d
@@ -76,13 +76,14 @@ export default {
       }, 500)
     },
     value (values) {
-      this.selectedDirectorsLocal = [...values]
+      this.selectedDirectors = [...values]
     }
   },
   methods: {
     ...mapActions('admin', ['setDefaultDirectors']),
     updateSelectedItems (value) {
-      this.selectedDirectorsLocal = value
+      this.selectedDirectors = value
+      this.$emit('input', value)
     }
   }
 }
