@@ -36,17 +36,17 @@
             </v-row>
             <v-row dense>
               <v-combobox
-                ref="combobox"
                 v-model="selectedDirectors"
                 :items="displayDirectors"
-                multiple
-                return-object
-                outlined
                 chips
                 deletable-chips
+                item-text="name"
+                multiple
                 open-on-clear
-                @change="updateCombo"
-                item-text="name">
+                outlined
+                ref="combobox"
+                return-object
+                @change="updateCombo">
               </v-combobox>
             </v-row>
           </v-container>
