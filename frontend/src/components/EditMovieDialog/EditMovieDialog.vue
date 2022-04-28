@@ -36,6 +36,7 @@
             </v-row>
             <v-row dense>
               <directors-combobox
+                v-model="selectedDirectors"
                 :movie="movie">
               </directors-combobox>
             </v-row>
@@ -74,6 +75,7 @@ export default {
   },
   mounted () {
     this.movieLocal = { ...this.movie }
+    this.selectedDirectors = this.movie.directors
   },
   computed: {
     open: {

@@ -1,6 +1,6 @@
 <template>
   <v-combobox
-    v-model="selectedDirectors"
+    v-model="selectedDirectorsLocal"
     :items="displayDirectors"
     chips
     deletable-chips
@@ -25,10 +25,14 @@ export default {
       directors: [],
       directorSearch: '',
       movieLocal: {},
-      selectedDirectors: []
+      selectedDirectorsLocal: []
     }
   },
   props: {
+    value: {
+      type: Array,
+      required: true
+    },
     movie: {
       required: true,
       type: Object
@@ -36,7 +40,6 @@ export default {
   },
   mounted () {
     this.movieLocal = { ...this.movie }
-    this.selectedDirectors = this.movie.directors
     if (this.defaultDirectors.length <= 0) {
       this.setDefaultDirectors()
     }
@@ -53,7 +56,7 @@ export default {
         ? this.directors
         : this.defaultDirectors
 
-      const existingDirectorIds = this.selectedDirectors.map(d => d.id)
+      const existingDirectorIds = this.selectedDirectorsLocal.map(d => d.id)
 
       return directors.map(d => {
         const { firstName, lastName } = d
@@ -77,15 +80,19 @@ export default {
           })
           .catch(error => console.error(error))
       }, 500)
+    },
+    value (values) {
+      this.selectedDirectorsLocal = [...values]
     }
   },
   methods: {
     ...mapActions('admin', ['setDefaultDirectors']),
     updateCombo () {
-      if (this.selectedDirectors.length <= 0) {
+      if (this.selectedDirectorsLocal.length <= 0) {
         this.directorSearch = ''
       }
-      this.selectedDirectors = this.selectedDirectors.filter(director => director.id !== undefined)
+      this.selectedDirectorsLocal = this.selectedDirectorsLocal.filter(director => director.id !== undefined)
+      this.$emit('input', this.selectedDirectorsLocal)
     },
     setInputValue (event) {
       this.directorSearch = event.target.value
