@@ -40,6 +40,12 @@
                 :movie="movie">
               </directors-combobox>
             </v-row>
+            <v-row dense>
+              <genres-combobox
+                v-model="selectedGenres"
+                :movie="movie">
+              </genres-combobox>
+            </v-row>
           </v-container>
         </v-form>
       </v-card-text>
@@ -49,16 +55,19 @@
 
 <script>
 import DirectorsCombobox from '@/components/EditMovieDialog/DirectorsCombobox.vue'
+import GenresCombobox from '@/components/EditMovieDialog/GenresCombobox.vue'
 
 export default {
   name: 'EditMovieDialog',
   components: {
-    DirectorsCombobox
+    DirectorsCombobox,
+    GenresCombobox
   },
   data () {
     return {
       movieLocal: {},
       selectedDirectors: [],
+      selectedGenres: [],
       directorSearchTimeout: null,
       inputElm: null
     }
