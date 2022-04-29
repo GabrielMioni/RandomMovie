@@ -22,7 +22,6 @@ export default {
       directors: [],
       directorSearch: '',
       directorSearchTimeout: null,
-      movieLocal: {},
       selectedDirectors: []
     }
   },
