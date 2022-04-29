@@ -14,12 +14,11 @@
     @update:search-input="setSearchValue"
     return-object>
     <template v-slot:item="{ item, attrs }">
-      <v-list-item @click="setSelectedItems(item)" v-bind="attrs">
+      <v-list-item @click="setSelectedItems(item)" v-bind="modifyAttrs(attrs, item.id)">
         <v-list-item-action>
           <v-simple-checkbox
             @click="setSelectedItems(item)"
-            :color="checkIfItemIsSelected(item) ? 'primary' : ''"
-            :value="checkIfItemIsSelected(item)"
+            :value="checkIfItemIsSelected(item.id)"
             v-ripple>
           </v-simple-checkbox>
         </v-list-item-action>
@@ -89,14 +88,20 @@ export default {
     }
   },
   methods: {
+    modifyAttrs (attrs, id) {
+      if (this.checkIfItemIsSelected(id)) {
+        attrs.inputValue = true
+      }
+      return attrs
+    },
     setSearchValue (value) {
       this.search = value
     },
     formatSelectedItems (selectedItems) {
       return selectedItems.filter(item => item.id !== undefined)
     },
-    checkIfItemIsSelected (item) {
-      return this.selectedItemsLocal.findIndex(i => i.id === item.id) > -1
+    checkIfItemIsSelected (id) {
+      return this.selectedItemsLocal.findIndex(i => i.id === id) > -1
     },
     setSelectedItems (clickedItem) {
       const index = this.selectedItemsLocal.findIndex(i => i.id === clickedItem.id)
