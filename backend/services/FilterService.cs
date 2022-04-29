@@ -45,6 +45,13 @@ namespace backend.Services
             return directors.Select(d => _mapper.Map<DirectorDto>(d)).ToList();
         }
 
+        public List<GenreDto> GetGenres ()
+        {
+            var genres = _context.Genres;
+
+            return genres.OrderBy(g => g.Name).Select(g => _mapper.Map<GenreDto>(g)).ToList();
+        }
+
         public object GetAllFiltersData()
         {
             var countries = _context.Countries.ToList();
