@@ -6,6 +6,7 @@
     <v-card>
       <v-toolbar
         color="primary"
+        class="mb-4"
         flat>
         <v-toolbar-title class="white--text">
           Edit Movie
@@ -52,6 +53,22 @@
           </v-container>
         </v-form>
       </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          plain
+          depressed
+          tile
+          @click="open = false">
+          Cancel
+        </v-btn>
+        <v-btn
+          class="primary"
+          depressed
+          tile>
+          Submit
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
