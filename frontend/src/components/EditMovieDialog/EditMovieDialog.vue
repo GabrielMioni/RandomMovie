@@ -7,6 +7,9 @@
       <v-toolbar
         color="primary"
         flat>
+        <v-toolbar-title class="white--text">
+          Edit Movie
+        </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn
           color="white"
