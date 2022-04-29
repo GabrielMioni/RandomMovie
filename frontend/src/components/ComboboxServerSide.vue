@@ -2,15 +2,30 @@
   <v-combobox
     v-model="selectedItemsLocal"
     :items="items"
-    chips
-    deletable-chips
     :item-text="itemText"
     :label="label"
+    chips
+    deletable-chips
     multiple
     open-on-clear
     outlined
     ref="combobox"
     return-object>
+    <template v-slot:item="{ item, attrs }">
+      <v-list-item @click="setSelectedItems(item)" v-bind="attrs">
+        <v-list-item-action>
+          <v-simple-checkbox
+            @click="setSelectedItems(item)"
+            :color="checkIfItemIsSelected(item) ? 'primary' : ''"
+            :value="checkIfItemIsSelected(item)"
+            v-ripple>
+          </v-simple-checkbox>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title v-text="item[itemText]"></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
   </v-combobox>
 </template>
 
@@ -85,6 +100,17 @@ export default {
     },
     formatSelectedItems (selectedItems) {
       return selectedItems.filter(item => item.id !== undefined)
+    },
+    checkIfItemIsSelected (item) {
+      return this.selectedItemsLocal.findIndex(i => i.id === item.id) > -1
+    },
+    setSelectedItems (clickedItem) {
+      const index = this.selectedItemsLocal.findIndex(i => i.id === clickedItem.id)
+      if (index > -1) {
+        this.selectedItemsLocal.splice(index, 1)
+        return
+      }
+      this.selectedItemsLocal.push(clickedItem)
     }
   }
 }
