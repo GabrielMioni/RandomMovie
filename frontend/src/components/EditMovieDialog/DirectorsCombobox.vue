@@ -4,6 +4,7 @@
     :items="displayDirectors"
     item-text="name"
     label="Directors"
+    :loading="loadingDirectors"
     :selected-items="selectedDirectors"
     @update:selected-items="updateSelectedItems">
   </combobox-server-side>
@@ -22,6 +23,7 @@ export default {
       directors: [],
       directorSearch: '',
       directorSearchTimeout: null,
+      loadingDirectors: false,
       selectedDirectors: []
     }
   },
@@ -59,6 +61,7 @@ export default {
   },
   watch: {
     directorSearch () {
+      this.loadingDirectors = true
       if (this.directorSearchTimeout) {
         clearTimeout(this.directorSearchTimeout)
         this.directorSearchTimeout = null
@@ -69,6 +72,9 @@ export default {
             this.directors = response.data
           })
           .catch(error => console.error(error))
+          .finally(() => {
+            this.loadingDirectors = false
+          })
       }, 500)
     }
   },

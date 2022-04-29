@@ -6,6 +6,7 @@
     :label="label"
     chips
     deletable-chips
+    :loading="loading"
     multiple
     open-on-clear
     outlined
@@ -46,6 +47,11 @@ export default {
     label: {
       type: String,
       required: true
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false
     },
     selectedItems: {
       type: Array,
