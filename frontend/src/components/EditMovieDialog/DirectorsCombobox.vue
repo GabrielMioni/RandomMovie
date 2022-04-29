@@ -31,14 +31,13 @@ export default {
       type: Array,
       required: true
     },
-    movie: {
+    movieDirectors: {
       required: true,
-      type: Object
+      type: Array
     }
   },
   mounted () {
-    this.movieLocal = { ...this.movie }
-    this.selectedDirectors = [...this.movie.directors]
+    this.selectedDirectors = [...this.movieDirectors]
     if (this.defaultDirectors.length <= 0) {
       this.setDefaultDirectors()
     }

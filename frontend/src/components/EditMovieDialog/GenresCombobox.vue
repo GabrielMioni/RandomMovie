@@ -18,26 +18,24 @@ export default {
   data () {
     return {
       genreSearch: '',
-      selectedGenres: [],
-      movieLocal: {}
+      selectedGenres: []
     }
   },
   props: {
     value: {
-      type: Array,
-      required: true
-    },
-    movie: {
       required: true,
-      type: Object
+      type: Array
+    },
+    movieGenres: {
+      required: true,
+      type: Array
     }
   },
   computed: {
     ...mapGetters('admin', ['genres'])
   },
   mounted () {
-    this.movieLocal = { ...this.movie }
-    this.selectedGenres = [...this.movie.genres]
+    this.selectedGenres = [...this.movieGenres]
     if (this.genres.length <= 0) {
       this.setGenres()
     }

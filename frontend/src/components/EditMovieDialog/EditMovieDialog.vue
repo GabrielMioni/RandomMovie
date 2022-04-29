@@ -37,13 +37,13 @@
             <v-row dense>
               <directors-combobox
                 v-model="selectedDirectors"
-                :movie="movie">
+                :movie-directors="movie.directors">
               </directors-combobox>
             </v-row>
             <v-row dense>
               <genres-combobox
                 v-model="selectedGenres"
-                :movie="movie">
+                :movie-genres="movie.genres">
               </genres-combobox>
             </v-row>
           </v-container>
