@@ -4,9 +4,9 @@
     :items="items"
     :item-text="itemText"
     :label="label"
+    :loading="loading"
     chips
     deletable-chips
-    :loading="loading"
     multiple
     open-on-clear
     outlined

@@ -2,10 +2,10 @@
   <combobox-server-side
     v-model="directorSearch"
     :items="displayDirectors"
-    item-text="name"
-    label="Directors"
     :loading="loadingDirectors"
     :selected-items="selectedDirectors"
+    item-text="name"
+    label="Directors"
     @update:selected-items="updateSelectedItems">
   </combobox-server-side>
 </template>

@@ -2,8 +2,8 @@
   <combobox-server-side
     v-model="genreSearch"
     :items="genres"
-    label="Genres"
     :selected-items="selectedGenres"
+    label="Genres"
     @update:selected-items="updateSelectedItems">
   </combobox-server-side>
 </template>
