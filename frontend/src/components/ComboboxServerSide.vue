@@ -10,6 +10,7 @@
     open-on-clear
     outlined
     ref="combobox"
+    @update:search-input="setSearchValue"
     return-object>
     <template v-slot:item="{ item, attrs }">
       <v-list-item @click="setSelectedItems(item)" v-bind="attrs">
@@ -61,9 +62,6 @@ export default {
       search: ''
     }
   },
-  beforeDestroy () {
-    this.removeInputEventListener()
-  },
   computed: {
     selectedItemsLocal: {
       get () {
@@ -80,23 +78,13 @@ export default {
   },
   watch: {
     search (value) {
-      this.$emit('input', value)
+      const setValue = value === null ? '' : value
+      this.$emit('input', setValue)
     }
   },
-  mounted () {
-    this.addInputEventListener()
-  },
   methods: {
-    setInputValue (event) {
-      this.search = event.target.value
-    },
-    addInputEventListener () {
-      const combobox = this.$refs.combobox.$el
-      this.inputElm = combobox.querySelector('input[type="text"]')
-      this.inputElm.addEventListener('input', this.setInputValue)
-    },
-    removeInputEventListener () {
-      this.inputElm.removeEventListener('input', this.setInputValue)
+    setSearchValue (value) {
+      this.search = value
     },
     formatSelectedItems (selectedItems) {
       return selectedItems.filter(item => item.id !== undefined)
