@@ -72,7 +72,7 @@ export default {
         if (selectedItems.length <= 0) {
           this.search = ''
         }
-        this.$emit('selectedItemsUpdate', selectedItems)
+        this.$emit('update:selected-items', selectedItems)
       }
     }
   },

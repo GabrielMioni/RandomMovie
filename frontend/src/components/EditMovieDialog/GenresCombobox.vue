@@ -4,7 +4,7 @@
     :items="genres"
     label="Genres"
     :selected-items="selectedGenres"
-    @selectedItemsUpdate="updateSelectedItems">
+    @update:selected-items="updateSelectedItems">
   </combobox-server-side>
 </template>
 

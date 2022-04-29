@@ -5,7 +5,7 @@
     item-text="name"
     label="Directors"
     :selected-items="selectedDirectors"
-    @selectedItemsUpdate="updateSelectedItems">
+    @update:selected-items="updateSelectedItems">
   </combobox-server-side>
 </template>
 
