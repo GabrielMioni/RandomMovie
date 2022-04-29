@@ -52,5 +52,14 @@ namespace backend.Controllers
 
             return Ok(directors);
         }
+
+        [HttpGet]
+        [Route("Genres")]
+        public IActionResult GetGenres()
+        {
+            var genres = _filterService.GetGenres();
+
+            return Ok(genres);
+        }
     }
 }
