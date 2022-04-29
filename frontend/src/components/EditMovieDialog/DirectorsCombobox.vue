@@ -72,9 +72,6 @@ export default {
           })
           .catch(error => console.error(error))
       }, 500)
-    },
-    value (values) {
-      this.selectedDirectors = [...values]
     }
   },
   methods: {
