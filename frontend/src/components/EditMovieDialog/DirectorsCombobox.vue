@@ -12,7 +12,7 @@
 <script>
 import { searchDirectors } from '@/api/filters'
 import { mapActions, mapGetters } from 'vuex'
-import ComboboxServerSide from '../ComboboxServerSide.vue'
+import ComboboxServerSide from '@/components/ComboboxServerSide.vue'
 
 export default {
   name: 'DirectorsCombobox',
@@ -50,15 +50,13 @@ export default {
         ? this.directors
         : this.defaultDirectors
 
-      const existingDirectorIds = this.selectedDirectors.map(d => d.id)
-
       return directors.map(d => {
         const { firstName, lastName } = d
         if (firstName !== lastName) {
           d.name = `${lastName}, ${firstName}`
         }
         return d
-      }).filter(d => !existingDirectorIds.includes(d.id))
+      })
     }
   },
   watch: {
