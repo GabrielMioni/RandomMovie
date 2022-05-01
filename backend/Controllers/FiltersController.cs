@@ -61,5 +61,14 @@ namespace backend.Controllers
 
             return Ok(genres);
         }
+
+        [HttpGet]
+        [Route("Countries")]
+        public IActionResult GetCountries()
+        {
+            var countries = _filterService.GetCountries();
+
+            return Ok(countries);
+        }
     }
 }

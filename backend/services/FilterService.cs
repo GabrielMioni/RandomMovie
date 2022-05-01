@@ -52,6 +52,12 @@ namespace backend.Services
             return genres.OrderBy(g => g.Name).Select(g => _mapper.Map<GenreDto>(g)).ToList();
         }
 
+        public List<Country> GetCountries ()
+        {
+            var countries = _context.Countries;
+            return countries.OrderBy(c => c.Name).ToList();
+        }
+
         public object GetAllFiltersData()
         {
             var countries = _context.Countries.ToList();
@@ -83,7 +89,7 @@ namespace backend.Services
 
         private async Task AddCountriesAsync(IElement main)
         {
-            var countries = GetCountries(main);
+            var countries = CollectCountriesData(main);
 
             await _context.TruncateTable("Countries");
             await _context.Countries.AddRangeAsync(countries);
@@ -113,7 +119,7 @@ namespace backend.Services
             await _context.Directors.AddRangeAsync(directors);
         }
 
-        private List<Country> GetCountries(IElement main)
+        private List<Country> CollectCountriesData(IElement main)
         {
             var countryStrings = GetFilterData(main, "country");
 
