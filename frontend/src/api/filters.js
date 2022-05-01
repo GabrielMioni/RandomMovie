@@ -10,3 +10,6 @@ export const searchDirectors = (search = '') => {
 
 export const getGenres = () =>
   axios.get('/api/Filters/Genres')
+
+export const getCountries = () =>
+  axios.get('/api/Filters/Countries')
