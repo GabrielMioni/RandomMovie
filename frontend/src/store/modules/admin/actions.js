@@ -1,4 +1,4 @@
-import { searchDirectors, getGenres } from '@/api/filters'
+import { searchDirectors, getGenres, getCountries } from '@/api/filters'
 
 const setDefaultDirectors = ({ commit }) => {
   searchDirectors().then(response => {
@@ -14,7 +14,15 @@ const setGenres = ({ commit }) => {
   })
 }
 
+const setCountries = ({ commit }) => {
+  getCountries().then(response => {
+    const countries = response.data
+    commit('SET_COUNTRIES', countries)
+  })
+}
+
 export default {
   setDefaultDirectors,
-  setGenres
+  setGenres,
+  setCountries
 }
