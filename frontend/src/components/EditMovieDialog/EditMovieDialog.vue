@@ -50,6 +50,11 @@
                 :movie-genres="movie.genres">
               </genres-combobox>
             </v-row>
+            <v-row dense>
+              <country-autocomplete
+                v-model="selectedCountry">
+              </country-autocomplete>
+            </v-row>
           </v-container>
         </v-form>
       </v-card-text>
@@ -76,16 +81,19 @@
 <script>
 import DirectorsCombobox from '@/components/EditMovieDialog/DirectorsCombobox.vue'
 import GenresCombobox from '@/components/EditMovieDialog/GenresCombobox.vue'
+import CountryAutocomplete from '@/components/EditMovieDialog/CountryAutocomplete.vue'
 
 export default {
   name: 'EditMovieDialog',
   components: {
+    CountryAutocomplete,
     DirectorsCombobox,
     GenresCombobox
   },
   data () {
     return {
       movieLocal: {},
+      selectedCountry: this.movie.country,
       selectedDirectors: [],
       selectedGenres: [],
       directorSearchTimeout: null,
@@ -105,6 +113,7 @@ export default {
   mounted () {
     this.movieLocal = { ...this.movie }
     this.selectedDirectors = this.movie.directors
+    this.selectedCountry = this.movie.country
   },
   computed: {
     open: {
