@@ -12,7 +12,7 @@
 
 <script>
 import { searchDirectors } from '@/api/filters'
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import ComboboxServerSide from '@/components/ComboboxServerSide.vue'
 
 export default {
@@ -39,9 +39,6 @@ export default {
   },
   mounted () {
     this.selectedDirectors = [...this.movieDirectors]
-    if (this.defaultDirectors.length <= 0) {
-      this.setDefaultDirectors()
-    }
   },
   computed: {
     ...mapGetters('admin', ['defaultDirectors']),
@@ -79,7 +76,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions('admin', ['setDefaultDirectors']),
     updateSelectedItems (value) {
       this.selectedDirectors = value
       this.$emit('input', value)

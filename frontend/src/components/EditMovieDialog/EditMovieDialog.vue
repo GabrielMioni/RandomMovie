@@ -82,6 +82,7 @@
 import DirectorsCombobox from '@/components/EditMovieDialog/DirectorsCombobox.vue'
 import GenresCombobox from '@/components/EditMovieDialog/GenresCombobox.vue'
 import CountryAutocomplete from '@/components/EditMovieDialog/CountryAutocomplete.vue'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'EditMovieDialog',
@@ -110,10 +111,11 @@ export default {
       type: Object
     }
   },
-  mounted () {
+  async mounted () {
     this.movieLocal = { ...this.movie }
     this.selectedDirectors = this.movie.directors
     this.selectedCountry = this.movie.country
+    await this.setAllFiltersData()
   },
   computed: {
     open: {
@@ -124,6 +126,9 @@ export default {
         this.$emit('input', value)
       }
     }
+  },
+  methods: {
+    ...mapActions('admin', ['setAllFiltersData'])
   }
 }
 </script>

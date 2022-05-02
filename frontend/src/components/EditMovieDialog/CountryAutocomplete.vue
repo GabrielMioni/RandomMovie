@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'CountrySelect',
@@ -26,11 +26,6 @@ export default {
       required: true
     }
   },
-  mounted () {
-    if (this.countries.length <= 0) {
-      this.setCountries()
-    }
-  },
   computed: {
     ...mapGetters('admin', ['countries']),
     selectedCountryLocal: {
@@ -41,9 +36,6 @@ export default {
         this.$emit('input', value)
       }
     }
-  },
-  methods: {
-    ...mapActions('admin', ['setCountries'])
   }
 }
 </script>
