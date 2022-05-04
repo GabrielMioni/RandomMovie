@@ -27,6 +27,23 @@ namespace backend.Services
             _mapper = mapper;
         }
 
+        private MovieDto MapMovieDtoWithCredits(Movie movie)
+        {
+            var movieDto = _mapper.Map<MovieDto>(movie);
+
+            foreach (var person in movie.Movie_Person)
+            {
+                var personId = person.PersonId;
+                var index = movieDto.Credits.FindIndex(c => c.Id == personId);
+                if (index > -1)
+                {
+                    movieDto.Credits[index].Character = person.Character;
+                }
+            }
+
+            return movieDto;
+        }
+
         public GetMoviesPaginatedResponse GetMoviesPaginated(GetMoviesPaginatedRequest request)
         {
             var page = request.Page <= 0 ? 1 : request.Page;
@@ -74,7 +91,16 @@ namespace backend.Services
 
             var skipTakeQueryable = moviesIncludeQueryable.Skip(skip).Take(itemsPerPage);
 
-            var movieDtos = skipTakeQueryable.Select(m => _mapper.Map<MovieDto>(m)).ToList();
+            var movies = skipTakeQueryable.ToList();
+
+            var movieDtos = new List<MovieDto>();
+
+            foreach (var movie in movies)
+            {
+                var movieDto = MapMovieDtoWithCredits(movie);
+                movieDtos.Add(movieDto);
+            }
+
             var total = movieDtos.Count;
             var pageCount = Decimal.Divide(totalMovieCount, itemsPerPage);
 
