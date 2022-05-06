@@ -67,5 +67,14 @@ namespace backend.Controllers
             await _metaDataService.CollectMoviePersonsByApiIdAsync();
             return Ok();
         }
+
+        [HttpGet]
+        [Route("People")]
+        public IActionResult SearchPeople(string search)
+        {
+            var people = _metaDataService.SearchPeople(search);
+
+            return Ok(people);
+        }
     }
 }

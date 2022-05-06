@@ -58,6 +58,17 @@ namespace backend.Services
             return payload;
         }
 
+        public List<PersonDto> SearchPeople (string search)
+        {
+            var searchString = search ?? string.Empty;
+
+            var people = searchString.Trim().Length > 0
+                ? _context.Persons.Where(p => p.Name.Contains(searchString) && p.Name != "").OrderBy(p => p.Name.Trim()).Take(25)
+                : _context.Persons.Where(p => p.Name != "").OrderBy(d => d.Name.Trim()).Take(25);
+
+            return people.Select(d => _mapper.Map<PersonDto>(d)).ToList();
+        }
+
         private Dictionary<string, string> GetImageSizeByType (string type)
         {
             var sizes = _context.MovieMetaImageSizes
