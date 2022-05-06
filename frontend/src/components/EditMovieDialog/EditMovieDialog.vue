@@ -55,6 +55,12 @@
                 v-model="selectedCountry">
               </country-autocomplete>
             </v-row>
+            <v-row dense>
+              <credits-combobox
+                v-model="selectedCredits"
+                :movie-credits="movie.credits">
+              </credits-combobox>
+            </v-row>
           </v-container>
         </v-form>
       </v-card-text>
@@ -82,6 +88,7 @@
 import DirectorsCombobox from '@/components/EditMovieDialog/DirectorsCombobox.vue'
 import GenresCombobox from '@/components/EditMovieDialog/GenresCombobox.vue'
 import CountryAutocomplete from '@/components/EditMovieDialog/CountryAutocomplete.vue'
+import CreditsCombobox from '@/components/EditMovieDialog/CreditsCombobox.vue'
 import { mapActions } from 'vuex'
 
 export default {
@@ -89,7 +96,8 @@ export default {
   components: {
     CountryAutocomplete,
     DirectorsCombobox,
-    GenresCombobox
+    GenresCombobox,
+    CreditsCombobox
   },
   data () {
     return {
@@ -97,6 +105,7 @@ export default {
       selectedCountry: this.movie.country,
       selectedDirectors: [],
       selectedGenres: [],
+      selectedCredits: [],
       directorSearchTimeout: null,
       inputElm: null
     }
@@ -115,6 +124,7 @@ export default {
     this.movieLocal = { ...this.movie }
     this.selectedDirectors = this.movie.directors
     this.selectedCountry = this.movie.country
+    this.selectedCredits = this.movie.credits
     await this.setAllFiltersData()
   },
   computed: {
