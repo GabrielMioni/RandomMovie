@@ -1,8 +1,10 @@
 import { searchDirectors, getGenres, getCountries } from '@/api/filters'
+import { searchPeople } from '@/api/meta'
 
 const setAllFiltersData = async ({ dispatch }) => {
   await Promise.all([
     dispatch('setDefaultDirectors'),
+    dispatch('setDefaultCredits'),
     dispatch('setGenres'),
     dispatch('setCountries')
   ])
@@ -16,6 +18,17 @@ const setDefaultDirectors = async ({ commit, state }) => {
   searchDirectors().then(response => {
     const directors = response.data
     commit('SET_DEFAULT_DIRECTORS', directors)
+  })
+}
+
+const setDefaultCredits = async ({ commit, state }) => {
+  if (state.defaultCredits.length > 0) {
+    return
+  }
+
+  searchPeople().then(response => {
+    const credits = response.data
+    commit('SET_DEFAULT_CREDITS', credits)
   })
 }
 
@@ -42,6 +55,7 @@ const setCountries = async ({ commit, state }) => {
 export default {
   setAllFiltersData,
   setDefaultDirectors,
+  setDefaultCredits,
   setGenres,
   setCountries
 }

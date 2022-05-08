@@ -3,6 +3,10 @@ export const SET_DEFAULT_DIRECTORS = (state, directors) => {
   state.defaultDirectors = directors
 }
 
+export const SET_DEFAULT_CREDITS = (state, credits) => {
+  state.defaultCredits = credits
+}
+
 export const SET_GENRES = (state, genres) => {
   state.genres = genres
 }
@@ -14,5 +18,6 @@ export const SET_COUNTRIES = (state, countries) => {
 export default {
   SET_COUNTRIES,
   SET_DEFAULT_DIRECTORS,
+  SET_DEFAULT_CREDITS,
   SET_GENRES
 }

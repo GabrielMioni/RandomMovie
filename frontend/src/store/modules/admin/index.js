@@ -5,6 +5,7 @@ import getters from './getters'
 const state = {
   countries: [],
   defaultDirectors: [],
+  defaultCredits: [],
   genres: []
 }
 
