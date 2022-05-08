@@ -58,7 +58,7 @@ namespace backend.Services
             return payload;
         }
 
-        public List<PersonDto> SearchPeople (string search)
+        public List<Person> SearchPeople (string search)
         {
             var searchString = search ?? string.Empty;
 
@@ -66,7 +66,8 @@ namespace backend.Services
                 ? _context.Persons.Where(p => p.Name.Contains(searchString) && p.Name != "").OrderBy(p => p.Name.Trim()).Take(25)
                 : _context.Persons.Where(p => p.Name != "").OrderBy(d => d.Name.Trim()).Take(25);
 
-            return people.Select(d => _mapper.Map<PersonDto>(d)).ToList();
+            // return people.Select(d => _mapper.Map<PersonDto>(d)).ToList();
+            return people.ToList();
         }
 
         private Dictionary<string, string> GetImageSizeByType (string type)
