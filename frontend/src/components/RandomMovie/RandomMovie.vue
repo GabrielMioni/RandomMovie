@@ -234,7 +234,7 @@ export default {
         id: 0,
         country: null,
         decade: null,
-        directors: [],
+        credits: [],
         genres: [],
         meta: null,
         title: '',
