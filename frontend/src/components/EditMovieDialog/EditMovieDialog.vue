@@ -76,7 +76,8 @@
         <v-btn
           class="primary"
           depressed
-          tile>
+          tile
+          @click="submitEditMovie">
           Submit
         </v-btn>
       </v-card-actions>
@@ -89,6 +90,7 @@ import DirectorsCombobox from '@/components/EditMovieDialog/DirectorsCombobox.vu
 import GenresCombobox from '@/components/EditMovieDialog/GenresCombobox.vue'
 import CountryAutocomplete from '@/components/EditMovieDialog/CountryAutocomplete.vue'
 import CreditsCombobox from '@/components/EditMovieDialog/CreditsCombobox.vue'
+import { editMovie } from '@/api/movies'
 import { mapActions } from 'vuex'
 
 export default {
@@ -125,6 +127,7 @@ export default {
     this.selectedDirectors = this.movie.directors
     this.selectedCountry = this.movie.country
     this.selectedCredits = this.movie.credits
+    this.selectedGenres = this.movie.genres
     await this.setAllFiltersData()
   },
   computed: {
@@ -138,7 +141,24 @@ export default {
     }
   },
   methods: {
-    ...mapActions('admin', ['setAllFiltersData'])
+    ...mapActions('admin', ['setAllFiltersData']),
+    buildMovieData () {
+      return {
+        creditIds: this.selectedCredits.map(c => c.id),
+        directorIds: this.selectedDirectors.map(d => d.id),
+        genreIds: this.selectedGenres.map(g => g.id),
+        title: this.movieLocal.title,
+        year: this.movieLocal.year
+      }
+    },
+    submitEditMovie () {
+      const movieData = this.buildMovieData()
+      editMovie(movieData)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(e => console.error(e)).finally()
+    }
   }
 }
 </script>
