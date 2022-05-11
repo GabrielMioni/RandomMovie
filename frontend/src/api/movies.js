@@ -8,3 +8,6 @@ export const getMovieById = (movieId) =>
 
 export const getMovies = (params = {}) =>
   axios.post('/api/Movies/GetMovies', params)
+
+export const editMovie = (params = {}) =>
+  axios.post('/api/EditMovie', params)
