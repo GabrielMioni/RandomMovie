@@ -111,7 +111,9 @@ export default {
         this.selectedItemsLocal.splice(index, 1)
         return
       }
-      this.selectedItemsLocal.push(clickedItem)
+      const selected = [...this.selectedItems]
+      selected.push(clickedItem)
+      this.selectedItemsLocal = selected
     }
   }
 }
