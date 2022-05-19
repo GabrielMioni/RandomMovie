@@ -27,6 +27,53 @@ namespace backend.Services
             _mapper = mapper;
         }
 
+        public void EditMovie(EditMoviePayload data)
+        {
+            var movieId = data.MovieId;
+            // var movie = _context.Movies.FirstOrDefault(m => m.Id == movieId);
+            var movie = _context.Movies
+                .Where(m => m.Id == movieId)
+                .Include(m => m.Country)
+                .Include(m => m.Decade)
+                .Include(m => m.Meta)
+                .Include(m => m.Movie_Directors)
+                .ThenInclude(md => md.Director)
+                .Include(m => m.Movie_Genres)
+                .ThenInclude(mg => mg.Genre)
+                .Include(m => m.Movie_Person)
+                .ThenInclude(md => md.Person)
+                .FirstOrDefault();
+
+            if (movie.Title.Trim() != data.Title)
+            {
+                movie.Title = data.Title;
+            }
+
+            var newDirectorIds = data.DirectorIds.Distinct().ToList();
+            var existingDirectors = movie.Movie_Directors.ToList();
+
+            existingDirectors.ForEach(md =>
+            {
+                if (!newDirectorIds.Contains(md.DirectorId))
+                {
+                    movie.Movie_Directors.Remove(md);
+                }
+            });
+
+            newDirectorIds.ForEach(id =>
+            {
+                var foundMovieDirector = movie.Movie_Directors.Where(m => m.DirectorId == id).FirstOrDefault();
+                if (foundMovieDirector == null)
+                {
+                    var movieDirector = new Movie_Director { DirectorId = id, MovieId = movieId };
+
+                    movie.Movie_Directors.Add(movieDirector);
+                }
+            });
+
+            _context.SaveChanges();
+        }
+
         private MovieDto MapMovieDtoWithCredits(Movie movie)
         {
             var movieDto = _mapper.Map<MovieDto>(movie);
