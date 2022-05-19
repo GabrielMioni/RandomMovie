@@ -144,6 +144,7 @@ export default {
     ...mapActions('admin', ['setAllFiltersData']),
     buildMovieData () {
       return {
+        movieId: this.movieLocal.id,
         creditIds: this.selectedCredits.map(c => c.id),
         directorIds: this.selectedDirectors.map(d => d.id),
         genreIds: this.selectedGenres.map(g => g.id),
@@ -157,7 +158,8 @@ export default {
         .then(response => {
           console.log(response)
         })
-        .catch(e => console.error(e)).finally()
+        .catch(e => console.error(e))
+        .finally()
     }
   }
 }
