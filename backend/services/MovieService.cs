@@ -48,11 +48,12 @@ namespace backend.Services
             }
 
             UpdateMovieDirectors(movie, data.DirectorIds);
+            UpdateMovieGeners(movie, data.GenreIds);
 
             _context.SaveChanges();
         }
 
-        private void UpdateMovieDirectors (Movie movie, List<int> directorIds)
+        private void UpdateMovieDirectors(Movie movie, List<int> directorIds)
         {
             var newDirectorIds = directorIds.Distinct().ToList();
             var existingDirectors = movie.Movie_Directors.ToList();
@@ -71,8 +72,31 @@ namespace backend.Services
                 if (foundMovieDirector == null)
                 {
                     var movieDirector = new Movie_Director { DirectorId = id, MovieId = movie.Id };
-
                     movie.Movie_Directors.Add(movieDirector);
+                }
+            });
+        }
+
+        private void UpdateMovieGeners(Movie movie, List<int> genreIds)
+        {
+            var newGenreIds = genreIds.Distinct().ToList();
+            var existingMovieGenres = movie.Movie_Genres.ToList();
+
+            existingMovieGenres.ForEach(mg =>
+            {
+                if (!newGenreIds.Contains(mg.GenreId))
+                {
+                    movie.Movie_Genres.Remove(mg);
+                }
+            });
+
+            newGenreIds.ForEach(id =>
+            {
+                var foundMovieGenre = movie.Movie_Genres.Where(m => m.GenreId == id).FirstOrDefault();
+                if (foundMovieGenre == null)
+                {
+                    var movieGenre = new Movie_Genre { GenreId = id, MovieId = movie.Id };
+                    movie.Movie_Genres.Add(movieGenre);
                 }
             });
         }
