@@ -29,10 +29,8 @@ namespace backend.Services
 
         public void EditMovie(EditMoviePayload data)
         {
-            var movieId = data.MovieId;
-            // var movie = _context.Movies.FirstOrDefault(m => m.Id == movieId);
             var movie = _context.Movies
-                .Where(m => m.Id == movieId)
+                .Where(m => m.Id == data.MovieId)
                 .Include(m => m.Country)
                 .Include(m => m.Decade)
                 .Include(m => m.Meta)
@@ -46,10 +44,17 @@ namespace backend.Services
 
             if (movie.Title.Trim() != data.Title)
             {
-                movie.Title = data.Title;
+                movie.Title = data.Title.Trim();
             }
 
-            var newDirectorIds = data.DirectorIds.Distinct().ToList();
+            UpdateMovieDirectors(movie, data.DirectorIds);
+
+            _context.SaveChanges();
+        }
+
+        private void UpdateMovieDirectors (Movie movie, List<int> directorIds)
+        {
+            var newDirectorIds = directorIds.Distinct().ToList();
             var existingDirectors = movie.Movie_Directors.ToList();
 
             existingDirectors.ForEach(md =>
@@ -65,13 +70,11 @@ namespace backend.Services
                 var foundMovieDirector = movie.Movie_Directors.Where(m => m.DirectorId == id).FirstOrDefault();
                 if (foundMovieDirector == null)
                 {
-                    var movieDirector = new Movie_Director { DirectorId = id, MovieId = movieId };
+                    var movieDirector = new Movie_Director { DirectorId = id, MovieId = movie.Id };
 
                     movie.Movie_Directors.Add(movieDirector);
                 }
             });
-
-            _context.SaveChanges();
         }
 
         private MovieDto MapMovieDtoWithCredits(Movie movie)
