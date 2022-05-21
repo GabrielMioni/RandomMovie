@@ -49,8 +49,33 @@ namespace backend.Services
 
             UpdateMovieDirectors(movie, data.DirectorIds);
             UpdateMovieGeners(movie, data.GenreIds);
+            UpdateMovieCredits(movie, data.CreditIds);
 
             _context.SaveChanges();
+        }
+
+        private void UpdateMovieCredits(Movie movie, List<int> peopleIds)
+        {
+            var newPeopleIds = peopleIds.Distinct().ToList();
+            var existingPeople = movie.Movie_Person.ToList();
+
+            existingPeople.ForEach(mp =>
+            {
+                if (!newPeopleIds.Contains(mp.PersonId))
+                {
+                    movie.Movie_Person.Remove(mp);
+                }
+            });
+
+            newPeopleIds.ForEach(id =>
+            {
+                var foundMoviePerson = movie.Movie_Person.Where(m => m.PersonId == id).FirstOrDefault();
+                if (foundMoviePerson == null)
+                {
+                    var moviePerson = new Movie_Person { PersonId = id, MovieId = movie.Id };
+                    movie.Movie_Person.Add(moviePerson);
+                }
+            });
         }
 
         private void UpdateMovieDirectors(Movie movie, List<int> directorIds)
