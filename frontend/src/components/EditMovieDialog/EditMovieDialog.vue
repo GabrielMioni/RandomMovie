@@ -149,7 +149,7 @@ export default {
         directorIds: this.selectedDirectors.map(d => d.id),
         genreIds: this.selectedGenres.map(g => g.id),
         title: this.movieLocal.title,
-        year: this.movieLocal.year
+        year: parseInt(this.movieLocal.year)
       }
     },
     submitEditMovie () {
