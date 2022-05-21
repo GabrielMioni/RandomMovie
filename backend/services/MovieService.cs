@@ -47,6 +47,21 @@ namespace backend.Services
                 movie.Title = data.Title.Trim();
             }
 
+            if (movie.Country.Id != data.CountryId)
+            {
+                var setCountry = _context.Countries.FirstOrDefault(c => c.Id == data.CountryId);
+
+                if (setCountry != null)
+                {
+                    movie.Country = setCountry;
+                }
+            }
+
+            if (movie.Year != data.Year)
+            {
+                movie.Year = data.Year;
+            }
+
             UpdateMovieDirectors(movie, data.DirectorIds);
             UpdateMovieGeners(movie, data.GenreIds);
             UpdateMovieCredits(movie, data.CreditIds);
