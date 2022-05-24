@@ -19,9 +19,9 @@ namespace backend.Controllers
         [HttpPost]
         public IActionResult EditMovie (EditMoviePayload data)
         {
-            _movieService.EditMovie(data);
+            var movieDto = _movieService.EditMovie(data);
 
-            return Ok(data);
+            return Ok(movieDto);
         }
     }
 }
