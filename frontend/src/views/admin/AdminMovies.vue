@@ -31,7 +31,8 @@
     <edit-movie-dialog
       v-if="selectedMovie"
       v-model="showEditDialog"
-      :movie="selectedMovie">
+      :movie="selectedMovie"
+      @update:movie="updateMovie">
     </edit-movie-dialog>
   </v-container>
 </template>
@@ -57,6 +58,7 @@ export default {
   },
   mounted () {
     this.$vuetify.theme.dark = false
+    this.setPaginatedMovies(this.options)
     // this.getMovies()
   },
   computed: {
@@ -122,7 +124,6 @@ export default {
       this.showEditDialog = true
     },
     getMovies () {
-      console.log('GetMovies called')
       this.loading = true
       getMovies(this.options)
         .then(response => {
@@ -142,6 +143,15 @@ export default {
       const textArea = document.createElement('textarea')
       textArea.innerHTML = value
       return textArea.value
+    },
+    updateMovie (updatedMovie) {
+      const movieIndex = this.movies.findIndex(movie => movie.id === updatedMovie.id)
+
+      Object.keys(updatedMovie).map(k => {
+        if (this.movies[movieIndex][k] !== updatedMovie[k]) {
+          this.movies[movieIndex][k] = updatedMovie[k]
+        }
+      })
     }
   }
 }
