@@ -2,6 +2,7 @@
   <v-dialog
     max-width="1200"
     :fullscreen="$vuetify.breakpoint.smAndDown"
+    :persistent="submitting"
     v-model="open">
     <v-card>
       <v-toolbar
@@ -20,7 +21,7 @@
         </v-btn>
       </v-toolbar>
       <v-card-text>
-        <v-form>
+        <v-form :disabled="submitting">
           <v-container>
             <v-row>
               <v-col>
@@ -69,12 +70,15 @@
         <v-btn
           plain
           depressed
+          :disabled="submitting"
           tile
           @click="open = false">
           Cancel
         </v-btn>
         <v-btn
           class="primary"
+          :disabled="submitting"
+          :loading="submitting"
           depressed
           tile
           @click="submitEditMovie">
@@ -109,7 +113,8 @@ export default {
       selectedGenres: [],
       selectedCredits: [],
       directorSearchTimeout: null,
-      inputElm: null
+      inputElm: null,
+      submitting: false
     }
   },
   props: {
@@ -145,6 +150,7 @@ export default {
     buildMovieData () {
       return {
         movieId: this.movieLocal.id,
+        countryId: this.selectedCountry.id,
         creditIds: this.selectedCredits.map(c => c.id),
         directorIds: this.selectedDirectors.map(d => d.id),
         genreIds: this.selectedGenres.map(g => g.id),
@@ -153,13 +159,23 @@ export default {
       }
     },
     submitEditMovie () {
+      this.submitting = true
       const movieData = this.buildMovieData()
+      let updatedMovie = null
+
       editMovie(movieData)
         .then(response => {
-          console.log(response)
+          updatedMovie = response.data
         })
         .catch(e => console.error(e))
-        .finally()
+        .finally(() => {
+          setTimeout(() => {
+            this.submitting = false
+            if (updatedMovie !== null) {
+              this.$emit('update:movie', updatedMovie)
+            }
+          }, 500)
+        })
     }
   }
 }
