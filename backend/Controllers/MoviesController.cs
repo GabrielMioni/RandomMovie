@@ -47,7 +47,7 @@ namespace backend.Controllers
                 return BadRequest("movieId is invalid");
             }
 
-            var movie = _movieService.GetMovieById(movieId);
+            var movie = _movieService.GetMovieDtoById(movieId);
             return Ok(movie);
         }
 
