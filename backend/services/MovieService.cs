@@ -27,20 +27,9 @@ namespace backend.Services
             _mapper = mapper;
         }
 
-        public void EditMovie(EditMoviePayload data)
+        public MovieDto EditMovie(EditMoviePayload data)
         {
-            var movie = _context.Movies
-                .Where(m => m.Id == data.MovieId)
-                .Include(m => m.Country)
-                .Include(m => m.Decade)
-                .Include(m => m.Meta)
-                .Include(m => m.Movie_Directors)
-                .ThenInclude(md => md.Director)
-                .Include(m => m.Movie_Genres)
-                .ThenInclude(mg => mg.Genre)
-                .Include(m => m.Movie_Person)
-                .ThenInclude(md => md.Person)
-                .FirstOrDefault();
+            var movie = GetMovieById(data.MovieId);
 
             if (movie.Title.Trim() != data.Title)
             {
@@ -67,6 +56,24 @@ namespace backend.Services
             UpdateMovieCredits(movie, data.CreditIds);
 
             _context.SaveChanges();
+
+            return GetMovieDtoById(movie.Id);
+        }
+
+        private Movie GetMovieByIdTwo (int movieId)
+        {
+            return _context.Movies
+                .Where(m => m.Id == movieId)
+                .Include(m => m.Country)
+                .Include(m => m.Decade)
+                .Include(m => m.Meta)
+                .Include(m => m.Movie_Directors)
+                .ThenInclude(md => md.Director)
+                .Include(m => m.Movie_Genres)
+                .ThenInclude(mg => mg.Genre)
+                .Include(m => m.Movie_Person)
+                .ThenInclude(md => md.Person)
+                .FirstOrDefault();
         }
 
         private void UpdateMovieCredits(Movie movie, List<int> peopleIds)
@@ -292,9 +299,10 @@ namespace backend.Services
             }
         }
 
-        public MovieDto GetMovieById(int movieId)
+        private Movie GetMovieById (int movieId)
         {
-            var movie = _context.Movies
+            return _context.Movies
+                .Where(m => m.Id == movieId)
                 .Include(m => m.Country)
                 .Include(m => m.Decade)
                 .Include(m => m.Meta)
@@ -304,8 +312,12 @@ namespace backend.Services
                 .ThenInclude(mg => mg.Genre)
                 .Include(m => m.Movie_Person)
                 .ThenInclude(md => md.Person)
-                .FirstOrDefault(m => m.Id == movieId);
-            //.FirstOrDefault(m => m.Id == 2580);
+                .FirstOrDefault();
+        }
+
+        public MovieDto GetMovieDtoById(int movieId)
+        {
+            var movie = GetMovieById(movieId);
 
             if (movie == null)
             {
